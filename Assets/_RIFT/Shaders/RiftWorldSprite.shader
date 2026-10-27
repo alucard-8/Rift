@@ -10,6 +10,7 @@ Shader "RIFT/WorldSprite"
         _LightColor ("Light Color", Color) = (1.0, 0.55, 0.25, 1)
         [HDR] _EdgeColor ("Edge Color (Ember top rim / Static outline)", Color) = (1.5, 1.2, 0.85, 1)
         [HDR] _GridColor ("Grid Color (Static)", Color) = (0.2, 1.2, 1.6, 1)
+        [HDR] _CrackColor ("Crack Color (Ember)", Color) = (3.0, 1.1, 0.3, 1)
         [HDR] _RimColor ("Boundary Glow", Color) = (1.0, 0.85, 0.6, 1)
         _EdgeWidth ("Edge Width (world)", Float) = 0.1
         _TextureScale ("Texture Scale", Float) = 1.2
@@ -41,6 +42,7 @@ Shader "RIFT/WorldSprite"
                 half4  _LightColor;
                 half4  _EdgeColor;
                 half4  _GridColor;
+                half4  _CrackColor;
                 half4  _RimColor;
                 float  _EdgeWidth;
                 float  _TextureScale;
@@ -72,22 +74,32 @@ Shader "RIFT/WorldSprite"
                 return o;
             }
 
-            half3 EmberSurface(Varyings i, float dTop, float dBottom)
+            // Volcanic basalt: dark faceted rock split by glowing, slowly breathing magma cracks.
+            half3 EmberSurface(Varyings i, float dTop, float dBottom, float t)
             {
                 float2 p = i.worldPos * _TextureScale;
-                // Horizontal brush strokes: stretched fbm plus a finer grain.
-                float strokes = RiftFbm(float2(p.x * 0.6, p.y * 3.2));
-                float grain = RiftNoise(p * 9.0);
-                float shade = saturate(0.25 + strokes * 0.75 + (grain - 0.5) * 0.12);
 
-                // Darker the deeper we go below the top surface.
-                float depth = saturate(dTop / 1.8) * 0.6;
-                half3 col = lerp(_LightColor.rgb, _ShadowColor.rgb, saturate(depth * 0.9 + (1.0 - shade) * 0.45));
+                // Rock facets: low-frequency fbm plus fine grit.
+                float facets = RiftFbm(p * 0.9);
+                float grit = RiftNoise(p * 14.0);
+                half3 col = lerp(_ShadowColor.rgb, _LightColor.rgb, saturate(facets * 0.9 + (grit - 0.5) * 0.15));
 
-                // Warm light catching the top edge, cool shadow at the bottom.
-                float rimNoise = RiftNoise(float2(i.worldPos.x * 6.0, 0.0)) * 0.05;
+                // Crack network, warped so the lines wander like real fractures.
+                float2 warp = float2(RiftFbm(p * 0.7 + 3.1), RiftFbm(p * 0.7 + 8.4)) * 0.9;
+                float edge = RiftVoronoiEdge(p * 0.7 + warp);
+                float crack = smoothstep(0.06, 0.0, edge);
+                float halo = smoothstep(0.25, 0.0, edge) * 0.2;
+
+                // Magma breathes: brightness travels slowly along the cracks.
+                float pulse = 0.65 + 0.35 * sin(t * 1.3 + RiftFbm(p * 0.5) * 9.0);
+                // Cracks glow hotter near the surface and cool off deeper down.
+                float heat = lerp(1.0, 0.35, saturate(dTop / 2.5));
+                col += _CrackColor.rgb * (crack + halo) * pulse * heat;
+
+                // Hot rim of light on the walkable top edge, dark underside.
+                float rimNoise = RiftNoise(float2(i.worldPos.x * 6.0, 0.0)) * 0.04;
                 col = lerp(col, _EdgeColor.rgb, smoothstep(_EdgeWidth + rimNoise, 0.0, dTop));
-                col *= lerp(0.55, 1.0, smoothstep(0.0, 0.3, dBottom));
+                col *= lerp(0.45, 1.0, smoothstep(0.0, 0.35, dBottom));
                 return col;
             }
 
@@ -126,7 +138,7 @@ Shader "RIFT/WorldSprite"
                 float dSide = min(i.uv.x, 1.0 - i.uv.x) * i.worldSize.x;
                 float dEdge = min(min(dTop, dBottom), dSide);
 
-                half3 col = _World > 0.5 ? StaticSurface(i, dEdge, t) : EmberSurface(i, dTop, dBottom);
+                half3 col = _World > 0.5 ? StaticSurface(i, dEdge, t) : EmberSurface(i, dTop, dBottom, t);
                 col *= tex.rgb;
 
                 // Hot glow where the world is dissolving at the rim.
