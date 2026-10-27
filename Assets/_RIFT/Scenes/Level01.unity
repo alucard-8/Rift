@@ -259,7 +259,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u25C6  memory kept"
+  m_text: memory kept
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
