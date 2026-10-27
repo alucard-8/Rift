@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_RIFT/Scenes/Level01.unity
+    guid: 798b3f946e4b25e4ebe76aba06c7a7dc
+  - enabled: 1
     path: Assets/_RIFT/Scenes/LensSandbox.unity
     guid: 386f57e468bbff2409873e185179c589
   m_configObjects: {}
