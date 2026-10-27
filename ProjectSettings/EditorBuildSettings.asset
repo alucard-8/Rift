@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_RIFT/Scenes/LensSandbox.unity
+    guid: 386f57e468bbff2409873e185179c589
   m_configObjects: {}
