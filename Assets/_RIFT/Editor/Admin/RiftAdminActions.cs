@@ -252,6 +252,15 @@ namespace Rift.EditorTools
             R.Call(m, "Request", other);
         }
 
+        public static void LaunchFromPad() => Player?.Launch(7.5f);
+        public static void CrumbleAll() { foreach (var f in FindAll<Rift.Gadgets.CrumblingFloor>()) f.Crumble(); }
+        public static void HoldSwitches() { foreach (var s in FindAll<Rift.Gadgets.LensSwitch>()) Lens?.SetOverride(s.transform.position); }
+        public static void TeleportToGadgets()
+        {
+            Object g = (Object)Find<Rift.Gadgets.BouncePad>() ?? Find<Rift.Gadgets.CrumblingFloor>();
+            if (g != null) TeleportTo(((Component)g).transform.position + Vector3.left * 2.5f);
+        }
+
         public static void Shake() => Find<CameraShake>()?.AddTrauma(0.6f);
         public static void HitStop() => R.Call(Find<HitStop>(), "OnDied");
         public static void DustBurst() => R.Call(Find<PlayerDust>(), "OnLanded", 22f);

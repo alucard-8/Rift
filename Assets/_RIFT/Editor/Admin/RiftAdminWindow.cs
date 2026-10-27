@@ -116,6 +116,7 @@ namespace Rift.EditorTools
                 if (GUILayout.Button("Glance", GUILayout.Width(70))) A.SoulGlance();
                 EditorGUILayout.EndHorizontal();
                 Feature("Ending", ("Resolve rift now", A.ResolveRiftNow), ("Show win screen", A.ShowWinScreen));
+                Feature("Gadgets", ("Go to gadget room", A.TeleportToGadgets), ("Pad launch", A.LaunchFromPad), ("Crumble all", A.CrumbleAll), ("Lens on switch", A.HoldSwitches));
                 Feature("Fx", ("Shake", A.Shake), ("Hit-stop", A.HitStop), ("Dust", A.DustBurst));
                 Feature("Level flow", ("Continue", A.ContinueToNext), ("Restart", A.RestartLevel), ("Title", A.BackToTitle));
             });
@@ -124,7 +125,8 @@ namespace Rift.EditorTools
             {
                 Row(("Movement", () => Report("Movement", RiftChecks.Movement())),
                     ("Level run-through", () => Report("Run-through", RiftChecks.RunLevel())),
-                    ("Glitch crush", () => Report("Glitch crush", RiftChecks.GlitchCrush())));
+                    ("Glitch crush", () => Report("Glitch crush", RiftChecks.GlitchCrush())),
+                    ("Gadgets", () => Report("Gadgets", RiftChecks.Gadgets())));
                 Row(("Text overlap", () => Report("Text overlap", RiftChecks.TextOverlap())),
                     ("Scene links", () => Report("Scene links", RiftChecks.SceneReferences())),
                     ("Run all", RunAll));

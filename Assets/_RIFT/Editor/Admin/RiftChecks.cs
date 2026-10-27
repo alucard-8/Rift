@@ -29,7 +29,22 @@ namespace Rift.EditorTools
     {
         // ---------- run-throughs (play mode) ----------
 
-        public static List<CheckResult> RunLevel()
+        // A tool can resend the same command while a long check is still running; the editor doesn't tick between
+        // the two, so a second run would start from the first run's end state. Same frame + same check = cached result.
+        private static readonly Dictionary<string, (int frame, List<CheckResult> results)> Cache = new();
+
+        private static List<CheckResult> Once(string key, Func<List<CheckResult>> run)
+        {
+            string id = key + "@" + SceneManager.GetActiveScene().name;
+            if (EditorApplication.isPlaying && Cache.TryGetValue(id, out var hit) && hit.frame == Time.frameCount) return hit.results;
+            List<CheckResult> results = run();
+            if (EditorApplication.isPlaying) Cache[id] = (Time.frameCount, results);
+            return results;
+        }
+
+        public static List<CheckResult> RunLevel() => Once("run", RunLevelUncached);
+
+        private static List<CheckResult> RunLevelUncached()
         {
             string scene = SceneManager.GetActiveScene().name;
             if (!EditorApplication.isPlaying) return Fail("Run-through", "Enter play mode in a level first.");
@@ -59,6 +74,16 @@ namespace Rift.EditorTools
             // Keep the lens low so the bridge glitch above stays asleep.
             h.CarryLens(87f, -0.8f);
             h.Check("Room 5 wall + bridge (glitch left asleep)", h.X > 87f);
+            // Room 6: Static pad (lens on it) up to the ledge, hold the lens on the switch, run through the door.
+            h.WalkUntil(1, 99.4f, 200); h.Step(5);
+            h.Lens(101f, 0.4f); h.Step(3);
+            h.WalkUntil(1, 100.6f, 60);
+            for (int i = 0; i < 90; i++) { if (h.X > 106f) h.Motor.SetMove(0); else h.Motor.SetMove(1); h.Step(1); }
+            h.Motor.SetMove(0); h.Step(20);
+            h.Check("Room 6 bounce pad onto the ledge", h.Y > 7.2f);
+            h.Lens(107.5f, 8.6f); h.Step(45);
+            h.WalkUntil(1, 123f, 260);
+            h.Check("Room 6 switch held, through the door", h.X > 120f);
             h.Walk(1, 60);
             h.Check("Goal reached", h.Run.IsComplete);
             return h.Finish();
@@ -87,13 +112,28 @@ namespace Rift.EditorTools
             h.Check("Gold stairs", h.Y > 18.1f);
             h.StairHop(80.5f); h.Lens(0, 40); h.Step(10);
             h.Check("Summit", h.Y > 19.2f);
+            // Room 6: hop across crumbling stones before they fall, ride the Static mover with the lens on it.
+            h.WalkUntil(1, 89.6f, 120); h.Step(5);
+            h.Hop(1, 92.6f); h.Hop(1, 96.6f); h.Hop(1, 100.6f);
+            h.Check("Crumbling stones", h.Y > 21.2f);
+            var mover = UnityEngine.Object.FindAnyObjectByType<Rift.Gadgets.MovingPlatform>().GetComponent<Rigidbody2D>();
+            for (int i = 0; i < 600 && mover.position.x > 105.4f; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); }
+            h.Motor.PressJump(); h.Motor.SetMove(1);
+            for (int i = 0; i < 70; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); if (h.X > mover.position.x - 0.2f) h.Motor.SetMove(0); }
+            h.Motor.ReleaseJump(); h.Motor.SetMove(0);
+            for (int i = 0; i < 600 && mover.position.x < 112.6f; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); }
+            h.Check("Ride the Static mover", h.Y > 21.2f && h.X > 110f);
+            h.Hop(1, 116.5f); h.Lens(0, 60); h.Step(10);
+            h.Check("Final ledge", h.X > 115f && h.Y > 21.2f);
             h.Walk(1, 80);
             h.Check("Goal reached", h.Run.IsComplete);
             return h.Finish();
         }
 
         /// <summary>Double jump, dash and wall jump behave as configured. Run on a fresh play session.</summary>
-        public static List<CheckResult> Movement()
+        public static List<CheckResult> Movement() => Once("Movement", MovementUncached);
+
+        private static List<CheckResult> MovementUncached()
         {
             if (!EditorApplication.isPlaying) return Fail("Movement", "Enter play mode in a level first.");
             var h = new Harness();
@@ -131,7 +171,42 @@ namespace Rift.EditorTools
             return h.Finish();
         }
 
-        public static List<CheckResult> GlitchCrush()
+        /// <summary>Each gadget in the level does its job: pads launch, floors crumble and come back, switches open doors.</summary>
+        public static List<CheckResult> Gadgets() => Once("Gadgets", GadgetsUncached);
+
+        private static List<CheckResult> GadgetsUncached()
+        {
+            if (!EditorApplication.isPlaying) return Fail("Gadgets", "Enter play mode in a level first.");
+            var h = new Harness();
+            var results = new List<CheckResult>();
+            foreach (var pad in UnityEngine.Object.FindObjectsByType<Rift.Gadgets.BouncePad>())
+            {
+                Vector2 at = pad.transform.position;
+                h.Lens(at.x, at.y + 0.4f); h.Step(3); h.Tp(at.x, at.y + 1.2f);
+                float y0 = h.Y, peak = y0; for (int i = 0; i < 80; i++) { h.Step(1); peak = Mathf.Max(peak, h.Y); }
+                results.Add(new CheckResult { Passed = peak - y0 > 5f, Name = $"Bounce pad '{pad.name}' launches", Detail = $"rose {peak - y0:F1} units" });
+            }
+            foreach (var floor in UnityEngine.Object.FindObjectsByType<Rift.Gadgets.CrumblingFloor>())
+            {
+                h.Lens(0, 60); Bounds b = floor.GetComponent<RiftSolid>().Bounds; h.Tp(b.center.x, b.max.y + 0.6f);
+                h.Step(45); bool fell = floor.Current == Rift.Gadgets.CrumblingFloor.State.Fallen;
+                h.Step(170); bool back = floor.Current == Rift.Gadgets.CrumblingFloor.State.Solid;
+                results.Add(new CheckResult { Passed = fell && back, Name = $"Crumbling floor '{floor.name}' falls then returns", Detail = $"fell={fell} back={back}" });
+            }
+            foreach (var door in UnityEngine.Object.FindObjectsByType<Rift.Gadgets.SwitchDoor>())
+            {
+                var sw = R.Get<Rift.Gadgets.LensSwitch>(door, "_switch");
+                h.Lens(sw.transform.position.x, sw.transform.position.y); h.Step(110);
+                results.Add(new CheckResult { Passed = sw.IsOn && door.IsOpen, Name = $"Lens switch opens '{door.name}'", Detail = $"on={sw.IsOn} open={door.IsOpen}" });
+            }
+            h.Finish();
+            if (results.Count == 0) results.Add(new CheckResult { Passed = true, Name = "Gadgets", Detail = "no gadgets in this level" });
+            return results;
+        }
+
+        public static List<CheckResult> GlitchCrush() => Once("GlitchCrush", GlitchCrushUncached);
+
+        private static List<CheckResult> GlitchCrushUncached()
         {
             if (!EditorApplication.isPlaying) return Fail("Glitch crush", "Enter play mode in a level first.");
             var h = new Harness();
@@ -212,6 +287,8 @@ namespace Rift.EditorTools
             public readonly LevelRun Run;
             public readonly RiftSolid[] Solids;
             public readonly GlitchEnemy[] Glitches;
+            private readonly MonoBehaviour[] _gadgets;
+            private readonly RiftPresence[] _gadgetPresences;
             private readonly Rigidbody2D _body;
             private readonly PlayerInputReader _input;
             private readonly SimulationMode2D _previousMode;
@@ -228,6 +305,8 @@ namespace Rift.EditorTools
                 Run = UnityEngine.Object.FindAnyObjectByType<LevelRun>();
                 Solids = UnityEngine.Object.FindObjectsByType<RiftSolid>();
                 Glitches = UnityEngine.Object.FindObjectsByType<GlitchEnemy>();
+                _gadgets = UnityEngine.Object.FindObjectsByType<MonoBehaviour>().Where(m => m.GetType().Namespace == "Rift.Gadgets").ToArray();
+                _gadgetPresences = UnityEngine.Object.FindObjectsByType<RiftPresence>().Where(p => p.GetComponent<GlitchEnemy>() == null).ToArray();
                 _body = Motor.GetComponent<Rigidbody2D>();
                 _input = Motor.GetComponent<PlayerInputReader>();
                 _input.enabled = false;
@@ -247,6 +326,8 @@ namespace Rift.EditorTools
                         R.Call(g.Presence, "FixedUpdate");
                         R.Call(g, "FixedUpdate");
                     }
+                    foreach (RiftPresence p in _gadgetPresences) R.Call(p, "FixedUpdate");
+                    foreach (MonoBehaviour g in _gadgets) if (g.isActiveAndEnabled) R.Call(g, "FixedUpdate");
                     R.Call(Motor, "FixedUpdate");
                     R.Call(Respawn, "FixedUpdate");
                     Physics2D.Simulate(0.02f);
