@@ -18,6 +18,8 @@ namespace Rift.Audio
     {
         [Header("Player")]
         public Sound jump;
+        public Sound doubleJump;
+        public Sound dash;
         public Sound land;
         public Sound deathShatter;
         public Sound deathThump;

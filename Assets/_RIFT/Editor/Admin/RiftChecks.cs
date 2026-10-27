@@ -73,10 +73,10 @@ namespace Rift.EditorTools
             h.CarryLens(33f, -3.3f);
             h.Check("Room 2 bridge", h.X > 32f);
             h.Tp(37.5f, -2.4f); h.Step(10);
-            h.Lens(40f, 0.6f); h.Step(3); h.Climb(1, 38.8f); h.Check("Shaft ledge 1", h.Y > -0.4f);
-            h.Climb(1, 40.3f); h.Check("Shaft ledge 2", h.Y > 2.0f);
-            h.Lens(40f, 3.0f); h.Step(3); h.Climb(-1, 39.7f); h.Check("Shaft ledge 3", h.Y > 4.4f);
-            h.Lens(40f, 5.4f); h.Step(3); h.Climb(1, 40.3f); h.Check("Shaft ledge 4", h.Y > 6.8f);
+            h.Lens(40f, 0.6f); h.Step(3); h.Climb(1, 38.5f); h.Check("Shaft ledge 1", h.Y > -0.4f);
+            h.Climb(1, 40.1f); h.Check("Shaft ledge 2", h.Y > 2.0f);
+            h.Lens(40f, 3.0f); h.Step(3); h.Climb(-1, 39.9f); h.Check("Shaft ledge 3", h.Y > 4.4f);
+            h.Lens(40f, 5.4f); h.Step(3); h.Climb(1, 40.1f); h.Check("Shaft ledge 4", h.Y > 6.8f);
             h.Climb(1, 44.2f); h.Lens(0, 40); h.Step(10);
             h.Check("Shaft exit", h.X > 43.5f && h.Y > 9f);
             h.WalkUntil(1, 57.5f, 150); h.Step(10);
@@ -89,6 +89,45 @@ namespace Rift.EditorTools
             h.Check("Summit", h.Y > 19.2f);
             h.Walk(1, 80);
             h.Check("Goal reached", h.Run.IsComplete);
+            return h.Finish();
+        }
+
+        /// <summary>Double jump, dash and wall jump behave as configured. Run on a fresh play session.</summary>
+        public static List<CheckResult> Movement()
+        {
+            if (!EditorApplication.isPlaying) return Fail("Movement", "Enter play mode in a level first.");
+            var h = new Harness();
+            var cfg = h.Motor.Config;
+            Vector2 start = h.Motor.transform.position;
+            h.Lens(0, 60); h.Step(20);
+
+            float y0 = h.Y, peak = y0;
+            h.Motor.PressJump(); for (int i = 0; i < 50; i++) { h.Step(1); peak = Mathf.Max(peak, h.Y); } h.Motor.ReleaseJump(); h.Step(30);
+            float single = peak - y0;
+            h.Check($"Single jump ≈ {cfg.jumpHeight:F1}", Mathf.Abs(single - cfg.jumpHeight) < 0.6f);
+
+            y0 = h.Y; peak = y0;
+            h.Motor.PressJump(); h.Step(14); h.Motor.ReleaseJump(); h.Motor.PressJump();
+            for (int i = 0; i < 60; i++) { h.Step(1); peak = Mathf.Max(peak, h.Y); } h.Motor.ReleaseJump(); h.Step(40);
+            h.Check($"Double jump goes higher ({peak - y0:F1} > {single:F1})", !cfg.allowDoubleJump || peak - y0 > single + 0.5f);
+
+            float x0 = h.X; h.Motor.SetMove(1); h.Step(1); h.Motor.SetMove(0); R.Set(h.Motor, "_nextDash", 0f); h.Motor.PressDash(); h.Step(Mathf.RoundToInt(cfg.dashTime / 0.02f)); R.Set(h.Motor, "_dashEnd", float.NegativeInfinity); h.Step(2);
+            h.Check($"Dash covers distance ({Mathf.Abs(h.X - x0):F1} units)", !cfg.allowDash || Mathf.Abs(h.X - x0) > 1.8f);
+            h.Step(30);
+
+            RiftSolid wall = h.Solids.FirstOrDefault(s => s.name == "Left Wall");
+            if (wall != null && cfg.allowWallJump)
+            {
+                h.Tp(wall.Bounds.max.x + 0.31f, wall.Bounds.center.y + 1.5f);
+                h.Motor.SetMove(-1); h.Step(20);
+                bool sliding = h.Motor.IsWallSliding;
+                // Frozen harness clock keeps coyote time open forever; clear it so this is a real wall jump.
+                R.Set(h.Motor, "_lastGroundedTime", float.NegativeInfinity);
+                h.Motor.PressJump(); h.Step(3); h.Motor.ReleaseJump(); h.Motor.SetMove(0);
+                bool kicked = h.Motor.Velocity.x > 2f;
+                h.Check("Wall slide, then wall jump kicks away", sliding && kicked);
+            }
+            h.Tp(start.x, start.y); h.Step(10);
             return h.Finish();
         }
 
@@ -271,6 +310,8 @@ namespace Rift.EditorTools
             public List<CheckResult> Finish()
             {
                 Physics2D.simulationMode = _previousMode;
+                // Harness steps don't advance Time.time, so clear any dash/wall-jump timers it started.
+                Motor.ResetMotion();
                 _input.enabled = true;
                 LensRef.SetOverride(null);
                 return _results;

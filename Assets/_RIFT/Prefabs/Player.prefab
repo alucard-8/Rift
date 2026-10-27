@@ -128,6 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Rift.Player.PlayerInputReader
   _move: {fileID: 8152978969355621416, guid: 43dbdeb3157c2e14daf5f714e5a1a987, type: 3}
   _jump: {fileID: 9116101238564799192, guid: 43dbdeb3157c2e14daf5f714e5a1a987, type: 3}
+  _dash: {fileID: -4959952926765083783, guid: 43dbdeb3157c2e14daf5f714e5a1a987, type: 3}
 --- !u!114 &3802137537787875432
 MonoBehaviour:
   m_ObjectHideFlags: 0

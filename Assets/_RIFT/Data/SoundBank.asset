@@ -16,6 +16,14 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: ceb264e2e605a2c4e8f6d6beb0d2fc38, type: 3}
     volume: 0.45
     pitchJitter: 0.08
+  doubleJump:
+    clip: {fileID: 8300000, guid: ceb264e2e605a2c4e8f6d6beb0d2fc38, type: 3}
+    volume: 0.4
+    pitchJitter: 0.05
+  dash:
+    clip: {fileID: 8300000, guid: a343e2db4e1b6d54f8fdad0f1bfb75b6, type: 3}
+    volume: 0.28
+    pitchJitter: 0.08
   land:
     clip: {fileID: 8300000, guid: f109b6645f2b687478f364308ea1e2bf, type: 3}
     volume: 0.7

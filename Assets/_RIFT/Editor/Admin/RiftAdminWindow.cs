@@ -29,8 +29,22 @@ namespace Rift.EditorTools
         private void OnDisable() => EditorApplication.playModeStateChanged -= OnPlayModeChanged;
         private void OnInspectorUpdate() => Repaint();
 
+        private Dictionary<string, bool> _savedAbilities;
+
+        private void RememberAbilities()
+        {
+            if (_savedAbilities != null) return;
+            _savedAbilities = new Dictionary<string, bool>();
+            foreach (string f in new[] { "allowDoubleJump", "allowDash", "allowWallJump" }) _savedAbilities[f] = A.Ability(f);
+        }
+
         private void OnPlayModeChanged(PlayModeStateChange change)
         {
+            if (change == PlayModeStateChange.ExitingPlayMode && _savedAbilities != null)
+            {
+                foreach (var kv in _savedAbilities) A.SetAbility(kv.Key, kv.Value);
+                _savedAbilities = null;
+            }
             _god = false; _radius = 1f; _timeScale = 1f;
         }
 
@@ -81,7 +95,16 @@ namespace Rift.EditorTools
                 Feature("Audio", ("Jump sfx", () => A.PlaySound(b => b.jump)), ("Death sfx", () => A.PlaySound(b => b.deathShatter)), ("Checkpoint sfx", () => A.PlaySound(b => b.checkpoint)), ("Switch music", A.SwitchMusic));
                 if (!inLevel) return;
                 Feature("Lens", ("Sweep across screen", A.SweepLens));
-                Feature("Player", ("Jump", A.Jump), ("Die / respawn", A.DieAndRespawn));
+                Feature("Player", ("Jump", A.Jump), ("Double jump", A.DoubleJump), ("Dash", A.Dash), ("Die / respawn", A.DieAndRespawn));
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Abilities", EditorStyles.boldLabel, GUILayout.Width(110));
+                foreach (var (label, field) in new[] { ("Double jump", "allowDoubleJump"), ("Dash", "allowDash"), ("Wall jump", "allowWallJump") })
+                {
+                    bool on = A.Ability(field);
+                    bool next = GUILayout.Toggle(on, label, "Button");
+                    if (next != on) { RememberAbilities(); A.SetAbility(field, next); }
+                }
+                EditorGUILayout.EndHorizontal();
                 Feature("Checkpoint shard", ("Light next", A.LightNextCheckpoint), ("Light all", A.LightAllCheckpoints), ("Replay pulse", A.ReplayCheckpointPulse));
                 Feature("Rift gate", ("Open", A.OpenGate), ("Reset", A.ResetGate));
                 Feature("Glitches", ("Wake (lens on)", A.WakeGlitches), ("Crush nearest", A.CrushNearestGlitch));
@@ -99,7 +122,8 @@ namespace Rift.EditorTools
 
             Section(ref _checks, "Automated checks", () =>
             {
-                Row(("Level run-through", () => Report("Run-through", RiftChecks.RunLevel())),
+                Row(("Movement", () => Report("Movement", RiftChecks.Movement())),
+                    ("Level run-through", () => Report("Run-through", RiftChecks.RunLevel())),
                     ("Glitch crush", () => Report("Glitch crush", RiftChecks.GlitchCrush())));
                 Row(("Text overlap", () => Report("Text overlap", RiftChecks.TextOverlap())),
                     ("Scene links", () => Report("Scene links", RiftChecks.SceneReferences())),
@@ -126,6 +150,7 @@ namespace Rift.EditorTools
             all.AddRange(RiftChecks.TextOverlap());
             if (EditorApplication.isPlaying)
             {
+                all.AddRange(RiftChecks.Movement());
                 all.AddRange(RiftChecks.RunLevel());
                 all.AddRange(RiftChecks.GlitchCrush());
             }

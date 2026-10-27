@@ -23,6 +23,9 @@ namespace Rift.Audio
         {
             _motor.Jumped += OnJumped;
             _motor.Landed += OnLanded;
+            _motor.DoubleJumped += OnDoubleJumped;
+            _motor.WallJumped += OnWallJumped;
+            _motor.Dashed += OnDashed;
             _respawn.Died += OnDied;
             _respawn.Respawned += OnRespawned;
             _goal.Reached += OnGoal;
@@ -38,6 +41,9 @@ namespace Rift.Audio
         {
             _motor.Jumped -= OnJumped;
             _motor.Landed -= OnLanded;
+            _motor.DoubleJumped -= OnDoubleJumped;
+            _motor.WallJumped -= OnWallJumped;
+            _motor.Dashed -= OnDashed;
             _respawn.Died -= OnDied;
             _respawn.Respawned -= OnRespawned;
             _goal.Reached -= OnGoal;
@@ -52,6 +58,9 @@ namespace Rift.Audio
         }
 
         private void OnJumped() => _sfx.Play(_bank.jump);
+        private void OnDoubleJumped() => _sfx.Play(_bank.doubleJump);
+        private void OnWallJumped(float away) => _sfx.Play(_bank.jump);
+        private void OnDashed(float dir) => _sfx.Play(_bank.dash);
 
         private void OnLanded(float speed)
         {
