@@ -57,5 +57,6 @@ MonoBehaviour:
     volume: 0.6
     pitchJitter: 0
   lensHum: {fileID: 8300000, guid: 310a6715ec5610f49a86f126e2101009, type: 3}
-  music: {fileID: 8300000, guid: 6ee2def01b826e4498f216de272738b8, type: 3}
-  musicVolume: 0.45
+  titleMusic: {fileID: 8300000, guid: 5776d7aea22d1f043b9812653613598c, type: 3}
+  levelMusic: {fileID: 8300000, guid: f71f178371b53b5488b766a43a174462, type: 3}
+  musicVolume: 0.5

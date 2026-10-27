@@ -35,7 +35,10 @@ namespace Rift.Audio
 
         [Header("Loops")]
         public AudioClip lensHum;
-        public AudioClip music;
+        public AudioClip titleMusic;
+        public AudioClip levelMusic;
         [Range(0f, 1f)] public float musicVolume = 0.45f;
+
+        public AudioClip ClipFor(MusicTrack track) => track == MusicTrack.Title ? titleMusic : levelMusic;
     }
 }
