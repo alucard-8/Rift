@@ -11,8 +11,12 @@ namespace Rift.Mindsets
 
         public MindsetTheme Theme => _theme;
 
+        static readonly int AccentId = Shader.PropertyToID("_RiftAccent");
+
         private void Awake()
         {
+            Shader.SetGlobalColor(AccentId, _theme.accentColor);
+
             foreach (RiftSolid solid in _solids)
             {
                 Material m = solid.World == RiftWorld.Ember ? _theme.emberMaterial : _theme.staticMaterial;
