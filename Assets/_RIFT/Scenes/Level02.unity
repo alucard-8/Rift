@@ -349,6 +349,7 @@ MonoBehaviour:
   - {fileID: 266067302}
   - {fileID: 1934995072}
   _background: {fileID: 491533492}
+  _lensEdge: {fileID: 318261267}
 --- !u!4 &92865341
 Transform:
   m_ObjectHideFlags: 0
@@ -4106,6 +4107,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97bf1e620c573e2479f93a606b780994, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rift.RiftLens
+--- !u!23 &318261267 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 558785069087786721, guid: 35e5d0fe6cc096142a71920ff0cb975b, type: 3}
+  m_PrefabInstance: {fileID: 318261265}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &327415294
 GameObject:
   m_ObjectHideFlags: 0

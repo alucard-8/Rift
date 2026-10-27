@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Regret_Ember
-  m_Shader: {fileID: 4800000, guid: 0da45e221ecf1ce4aa39a5977a28121b, type: 3}
+  m_Shader: {fileID: 4800000, guid: daa6b911df73f5340a139faf4a5f1808, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,6 +29,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _DropDensity: 3
+    - _DropSpeed: 0.6
     - _EdgeWidth: 0.07
     - _Flicker: 0.12
     - _NoiseScale: 6
@@ -42,5 +44,9 @@ Material:
     - _LightColor: {r: 0.2, g: 0.23, b: 0.29, a: 1}
     - _RimColor: {r: 0.7, g: 0.95, b: 1.3, a: 1}
     - _ShadowColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
+    - _SheenColor: {r: 0.7, g: 0.8, b: 1, a: 1}
+    - _StoneDark: {r: 0.035, g: 0.045, b: 0.06, a: 1}
+    - _StoneLight: {r: 0.16, g: 0.19, b: 0.24, a: 1}
+    - _WetColor: {r: 0.45, g: 0.6, b: 0.85, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
