@@ -49,5 +49,5 @@ Shader "RIFT/Name"
 ## Rules
 - Credit the source: comment at the top with the original URL and author; respect its license.
 - Expose the look as material properties (colour, speed, strength) — no hard-coded magic numbers.
-- Global rift data comes from `_RiftCenter` (world xy), `_RiftRadius`, `_RiftEdge` set by `RiftLens` via `Shader.SetGlobal*`. Put shared helpers in `Assets/Shaders/RiftCommon.hlsl`.
+- Global rift data comes from `_RiftCenter` (world xy), `_RiftRadius`, `_RiftEdge` set by `RiftLens` via `Shader.SetGlobal*`. Put shared helpers in `Assets/_RIFT/Shaders/RiftCommon.hlsl`.
 - After writing: check the Unity console for shader compile errors and look at it in play mode.

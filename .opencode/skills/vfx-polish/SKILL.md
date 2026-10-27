@@ -18,7 +18,7 @@ description: Add juice to RIFT — particles, camera shake, hit-stop, post-proce
 - **Squash & stretch** on jumps/landings.
 
 ## Particles
-- Prefabs in `Assets/Prefabs/Fx/`, spawned by `Fx/` listeners from gameplay events, pooled.
+- Prefabs in `Assets/_RIFT/Prefabs/Fx/`, spawned by `Fx/` listeners from gameplay events, pooled.
 - Use URP 2D-compatible materials; additive for sparks, alpha for dust.
 - Lens edge sparks spawn along the circle where it intersects Static geometry.
 

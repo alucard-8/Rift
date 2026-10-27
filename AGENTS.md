@@ -14,13 +14,20 @@ Hold the lens over a gap to bridge it; slide it off an enemy to erase it.
 
 ## Tech
 - Unity **6000.6** (Unity 6), **URP 2D Renderer**, new **Input System**.
-- Shaders: hand-written HLSL `.shader` files for URP in `Assets/Shaders/` (shared code in `.hlsl` includes).
+- Shaders: hand-written HLSL `.shader` files for URP in `Assets/_RIFT/Shaders/` (shared code in `.hlsl` includes).
   Shader Graph only when a hand-written shader is clearly worse.
 - Unity MCP (`com.coplaydev.unity-mcp`) is installed; agents may drive the editor through it.
 
+## Where you may write
+- **Write only inside `Assets/_RIFT/`** (all game code, shaders, art, prefabs, scenes live there).
+- You may *read* anything else (packages, `ProjectSettings/`, third-party folders) but never modify it,
+  except `Packages/manifest.json` and `ProjectSettings/` when a feature explicitly needs it and the user agreed.
+- Always use the **new Input System** (`UnityEngine.InputSystem`), never `Input.GetKey`/`Input.GetAxis`.
+- Talk to the editor through **Unity MCP**; check the console after every change.
+
 ## Architecture
 ```
-Assets/
+Assets/_RIFT/
   Scripts/
     Core/       bootstrapping, services, event bus, ScriptableObject configs
     Rift/       lens input, lens mask, world-membership & physics toggling
@@ -64,3 +71,4 @@ Project skills live in `.opencode/skills/`:
 - `shader-port` — converting Shadertoy / Godot shaders to URP HLSL.
 - `vfx-polish` — particles, camera juice and the "no AI slop" art bar.
 - `git-workflow` — the branch/commit routine above, step by step.
+- `unity-mcp-skill` — how to drive the Unity editor through MCP (scenes, GameObjects, scripts, console, play mode).
