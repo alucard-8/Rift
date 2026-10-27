@@ -65,6 +65,13 @@ Assets/_RIFT/
 - Before committing: console has no errors, the scene is saved, `git status` contains only files belonging to this feature.
 - Merge a feature into `main` only after it was played and works.
 
+## Admin panel
+**Window ▸ RIFT ▸ Admin Panel** (`Assets/_RIFT/Editor/Admin/`) is the one place to try and test everything.
+Every feature must update it **before it is committed**:
+- Add "try it" actions for the feature to `RiftAdminActions.cs` and a row of buttons in the *Feature showcase* section of `RiftAdminWindow.cs`.
+- If the feature has gameplay logic, add an automated check to `RiftChecks.cs` (reuse the `Harness` for frame-stepped play) and make sure *Run all* still passes in Level01 and Level02.
+- Keep it editor-only: reach into gameplay through public APIs or `AdminReflection`, never by adding debug code to runtime scripts.
+
 ## Skills
 Project skills live in `.opencode/skills/`:
 - `rift-feature` — how to plan, build and verify one feature.
