@@ -47,6 +47,8 @@ namespace Rift.Mindsets
         /// <summary>How many characters have been written so far.</summary>
         public int TypedCount => Mathf.FloorToInt(_typed);
         public bool IsFullyTyped => _text != null && _typed >= _text.textInfo.characterCount + _flashLength;
+        /// <summary>True only if the player came close enough for this line to start writing itself.</summary>
+        public bool WasHeard { get; private set; }
 
         /// <summary>Write the whole line at once (used when the rift resolves).</summary>
         public void RevealAll()
@@ -71,7 +73,10 @@ namespace Rift.Mindsets
         private void LateUpdate()
         {
             if (!_started && Vector2.Distance(_player.position, transform.position) < _triggerRange)
+            {
                 _started = true;
+                WasHeard = true;
+            }
             if (_started) _typed += _charsPerSecond * Time.deltaTime;
 
             ApplyLetters();

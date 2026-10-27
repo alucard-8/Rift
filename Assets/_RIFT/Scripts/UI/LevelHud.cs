@@ -1,49 +1,54 @@
 using Rift.Levels;
-using Rift.Mindsets;
 using TMPro;
 using UnityEngine;
 
 namespace Rift.UI
 {
-    /// <summary>Run timer, death counter and the end-of-level panel. Only reads from LevelRun.</summary>
+    /// <summary>In-run HUD: time, deaths and a checkpoint pip. Fades away when the level is won. Only reads.</summary>
     public class LevelHud : MonoBehaviour
     {
         [SerializeField] private LevelRun _run;
+        [SerializeField] private CanvasGroup _hud;
         [SerializeField] private TMP_Text _timer;
         [SerializeField] private TMP_Text _deaths;
-        [SerializeField] private CanvasGroup _endPanel;
-        [SerializeField] private TMP_Text _endTitle;
-        [SerializeField] private TMP_Text _endStats;
-        [SerializeField] private MindsetTheme _theme;
-        [SerializeField] private float _panelFadeSpeed = 3f;
+        [SerializeField] private Checkpoint[] _checkpoints;
+        [SerializeField] private CanvasGroup _checkpointPip;
+        [SerializeField] private float _pipHold = 1.6f;
+        [SerializeField] private float _fadeSpeed = 2.5f;
 
-        private bool _showEnd;
+        private bool _hidden;
+        private float _pipTimer;
 
-        private void Awake()
+        public static string FormatTime(float t) => $"{(int)(t / 60f):00}:{t % 60f:00.0}";
+
+        private void Awake() => _checkpointPip.alpha = 0f;
+
+        private void OnEnable()
         {
-            _endPanel.alpha = 0f;
-            _endPanel.blocksRaycasts = false;
+            _run.Completed += OnCompleted;
+            foreach (Checkpoint c in _checkpoints) c.Activated += OnCheckpoint;
         }
 
-        private void OnEnable() => _run.Completed += OnCompleted;
-        private void OnDisable() => _run.Completed -= OnCompleted;
+        private void OnDisable()
+        {
+            _run.Completed -= OnCompleted;
+            foreach (Checkpoint c in _checkpoints) if (c != null) c.Activated -= OnCheckpoint;
+        }
 
         private void Update()
         {
+            float dt = Time.unscaledDeltaTime;
             _timer.text = FormatTime(_run.Elapsed);
-            _deaths.text = _run.Deaths == 1 ? "1 death" : $"{_run.Deaths} deaths";
+            _deaths.text = _run.Deaths.ToString();
 
-            if (_showEnd) _endPanel.alpha = Mathf.MoveTowards(_endPanel.alpha, 1f, _panelFadeSpeed * Time.deltaTime);
+            _hud.alpha = Mathf.MoveTowards(_hud.alpha, _hidden ? 0f : 1f, _fadeSpeed * dt);
+
+            _pipTimer -= dt;
+            float pipTarget = _pipTimer > 0f ? 1f : 0f;
+            _checkpointPip.alpha = Mathf.MoveTowards(_checkpointPip.alpha, pipTarget, 4f * dt);
         }
 
-        private void OnCompleted(float time, int deaths)
-        {
-            _showEnd = true;
-            string d = deaths == 1 ? "1 death" : $"{deaths} deaths";
-            _endTitle.text = _theme.resolutionTitle;
-            _endStats.text = $"<size=55%>{_theme.resolutionLine}</size>\n{FormatTime(time)}  ·  {d}\n<size=60%>[space] continue   ·   [R] restart   ·   [esc] title</size>";
-        }
-
-        private static string FormatTime(float t) => $"{(int)(t / 60f):00}:{t % 60f:00.0}";
+        private void OnCheckpoint() => _pipTimer = _pipHold;
+        private void OnCompleted(float time, int deaths) => _hidden = true;
     }
 }

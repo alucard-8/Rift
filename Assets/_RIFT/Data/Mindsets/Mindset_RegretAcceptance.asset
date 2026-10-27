@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed10d68cf24f5b146b5eeb7ce2cb9ba7, type: 3}
   m_Name: Mindset_RegretAcceptance
   m_EditorClassIdentifier: Assembly-CSharp::Rift.Mindsets.MindsetTheme
+  levelLabel: level two
   emberMindset: REGRET
   staticMindset: ACCEPTANCE
   healthyWorld: 1
