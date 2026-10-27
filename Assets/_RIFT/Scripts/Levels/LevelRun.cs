@@ -1,8 +1,8 @@
 using System;
+using Rift.Core;
 using Rift.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 namespace Rift.Levels
 {
@@ -14,6 +14,9 @@ namespace Rift.Levels
         [SerializeField] private PlayerInputReader _playerInput;
         [SerializeField] private Goal _goal;
         [SerializeField] private InputActionReference _restart;
+        [SerializeField] private InputActionReference _back;
+        [SerializeField] private SceneFader _fader;
+        [SerializeField] private int _titleSceneIndex = 0;
 
         private bool _started;
 
@@ -29,6 +32,8 @@ namespace Rift.Levels
             _goal.Reached += OnGoalReached;
             _restart.action.Enable();
             _restart.action.performed += OnRestart;
+            _back.action.Enable();
+            _back.action.performed += OnBack;
         }
 
         private void OnDisable()
@@ -36,6 +41,7 @@ namespace Rift.Levels
             _respawn.Died -= OnDied;
             _goal.Reached -= OnGoalReached;
             _restart.action.performed -= OnRestart;
+            _back.action.performed -= OnBack;
         }
 
         private void Update()
@@ -58,7 +64,8 @@ namespace Rift.Levels
             Completed?.Invoke(Elapsed, Deaths);
         }
 
-        private void OnRestart(InputAction.CallbackContext _) =>
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        private void OnRestart(InputAction.CallbackContext _) => _fader.ReloadCurrent();
+
+        private void OnBack(InputAction.CallbackContext _) => _fader.FadeOutAndLoad(_titleSceneIndex);
     }
 }
