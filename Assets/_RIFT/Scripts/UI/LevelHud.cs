@@ -1,4 +1,5 @@
 using Rift.Levels;
+using Rift.Mindsets;
 using TMPro;
 using UnityEngine;
 
@@ -11,7 +12,9 @@ namespace Rift.UI
         [SerializeField] private TMP_Text _timer;
         [SerializeField] private TMP_Text _deaths;
         [SerializeField] private CanvasGroup _endPanel;
+        [SerializeField] private TMP_Text _endTitle;
         [SerializeField] private TMP_Text _endStats;
+        [SerializeField] private MindsetTheme _theme;
         [SerializeField] private float _panelFadeSpeed = 3f;
 
         private bool _showEnd;
@@ -37,7 +40,8 @@ namespace Rift.UI
         {
             _showEnd = true;
             string d = deaths == 1 ? "1 death" : $"{deaths} deaths";
-            _endStats.text = $"{FormatTime(time)}  ·  {d}\n<size=60%>[R] restart   ·   [esc] title</size>";
+            _endTitle.text = _theme.resolutionTitle;
+            _endStats.text = $"<size=55%>{_theme.resolutionLine}</size>\n{FormatTime(time)}  ·  {d}\n<size=60%>[R] restart   ·   [esc] title</size>";
         }
 
         private static string FormatTime(float t) => $"{(int)(t / 60f):00}:{t % 60f:00.0}";

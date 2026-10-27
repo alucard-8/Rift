@@ -47,6 +47,13 @@ namespace Rift.Player
             _isJumping = false;
         }
 
+        /// <summary>Takes the body out of physics entirely (level finished).</summary>
+        public void Freeze()
+        {
+            ResetMotion();
+            _body.simulated = false;
+        }
+
         /// <summary>Stops all motion, e.g. after a respawn.</summary>
         public void ResetMotion()
         {

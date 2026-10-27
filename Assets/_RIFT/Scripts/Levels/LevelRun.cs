@@ -60,7 +60,7 @@ namespace Rift.Levels
             IsComplete = true;
             _playerInput.enabled = false;
             _player.SetMove(0f);
-            _player.ResetMotion();
+            _player.Freeze();
             Completed?.Invoke(Elapsed, Deaths);
         }
 
