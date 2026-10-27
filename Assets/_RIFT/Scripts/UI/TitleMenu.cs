@@ -1,3 +1,4 @@
+using System;
 using Rift.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,6 +15,10 @@ namespace Rift.UI
         [SerializeField] private InputActionReference _submit;
         [SerializeField] private InputActionReference _cancel;
         [SerializeField] private int _firstLevelIndex = 1;
+
+        private bool _started;
+
+        public event Action Started;
 
         private void OnEnable()
         {
@@ -36,7 +41,13 @@ namespace Rift.UI
         private void OnSubmit(InputAction.CallbackContext _) => StartGame();
         private void OnCancel(InputAction.CallbackContext _) => Quit();
 
-        public void StartGame() => _fader.FadeOutAndLoad(_firstLevelIndex);
+        public void StartGame()
+        {
+            if (_started) return;
+            _started = true;
+            Started?.Invoke();
+            _fader.FadeOutAndLoad(_firstLevelIndex);
+        }
 
         public void Quit()
         {

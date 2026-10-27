@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29282490481c92548b9ebdb4cdb635af, type: 3}
+  m_Name: SoundBank
+  m_EditorClassIdentifier: Assembly-CSharp::Rift.Audio.SoundBank
+  jump:
+    clip: {fileID: 8300000, guid: ceb264e2e605a2c4e8f6d6beb0d2fc38, type: 3}
+    volume: 0.45
+    pitchJitter: 0.08
+  land:
+    clip: {fileID: 8300000, guid: f109b6645f2b687478f364308ea1e2bf, type: 3}
+    volume: 0.7
+    pitchJitter: 0.08
+  deathShatter:
+    clip: {fileID: 8300000, guid: 0d1e629c407d08a4b99a2c9b0d494a52, type: 3}
+    volume: 0.8
+    pitchJitter: 0.05
+  deathThump:
+    clip: {fileID: 8300000, guid: 2b3e9251c59b0e54abc63097034143b1, type: 3}
+    volume: 0.7
+    pitchJitter: 0.03
+  respawn:
+    clip: {fileID: 8300000, guid: a8b37af4ab303b34d80f49dc734d7758, type: 3}
+    volume: 0.55
+    pitchJitter: 0.03
+  checkpoint:
+    clip: {fileID: 8300000, guid: 33ca36d0cd17604438888897d9362e12, type: 3}
+    volume: 0.5
+    pitchJitter: 0
+  goalSeal:
+    clip: {fileID: 8300000, guid: 9df245bf56ca5d04197d3bf68e686df7, type: 3}
+    volume: 0.8
+    pitchJitter: 0
+  glitchMaterialize:
+    clip: {fileID: 8300000, guid: c07b9f53125edc74a96b7e3197730e5c, type: 3}
+    volume: 0.45
+    pitchJitter: 0.1
+  glitchCrushed:
+    clip: {fileID: 8300000, guid: a3ac2af4f009a6b45b486c0242622cfa, type: 3}
+    volume: 0.8
+    pitchJitter: 0.06
+  uiHover:
+    clip: {fileID: 8300000, guid: f4aefbaedc56e16479c4a5641accc53d, type: 3}
+    volume: 0.35
+    pitchJitter: 0.1
+  uiStart:
+    clip: {fileID: 8300000, guid: a343e2db4e1b6d54f8fdad0f1bfb75b6, type: 3}
+    volume: 0.6
+    pitchJitter: 0
+  lensHum: {fileID: 8300000, guid: 310a6715ec5610f49a86f126e2101009, type: 3}
+  music: {fileID: 8300000, guid: 6ee2def01b826e4498f216de272738b8, type: 3}
+  musicVolume: 0.45
