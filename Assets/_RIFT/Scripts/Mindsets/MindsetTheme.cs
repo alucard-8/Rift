@@ -10,6 +10,8 @@ namespace Rift.Mindsets
     public class MindsetTheme : ScriptableObject
     {
         [Header("The clash")]
+        [Tooltip("Shown under the clash on the level intro card, e.g. \"level one\".")]
+        public string levelLabel = "level one";
         public string emberMindset = "DOUBT";
         public string staticMindset = "TRUST";
         [Tooltip("The mindset the rift resolves to at the end of the level.")]
