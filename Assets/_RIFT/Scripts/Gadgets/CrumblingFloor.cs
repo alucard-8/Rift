@@ -72,7 +72,7 @@ namespace Rift.Gadgets
             _timer = _fallenSteps;
             transform.position = _home;
             _solid.enabled = !fallen;
-            foreach (Collider2D c in _cells) c.enabled = !fallen && c.enabled;
+            if (fallen) foreach (Collider2D c in _cells) c.enabled = false;   // RiftSolid re-enables its cells on restore
             Color col = _sprite.color; col.a = fallen ? 0f : 1f; _sprite.color = col;
             if (fallen) Fell?.Invoke(); else Restored?.Invoke();
         }

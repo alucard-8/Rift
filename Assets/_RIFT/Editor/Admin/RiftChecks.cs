@@ -114,9 +114,12 @@ namespace Rift.EditorTools
             h.Check("Summit", h.Y > 19.2f);
             // Room 6: hop across crumbling stones before they fall, ride the Static mover with the lens on it.
             h.WalkUntil(1, 89.6f, 120); h.Step(5);
+            var moving = UnityEngine.Object.FindAnyObjectByType<Rift.Gadgets.MovingPlatform>();
+            var mover = moving.GetComponent<Rigidbody2D>();
+            // Stones don't hold you for long: wait on safe ground until the mover is on its way back.
+            for (int i = 0; i < 800 && (AdminReflection.Get<bool>(moving, "_toB") || mover.position.x > 108.6f); i++) h.Step(1);
             h.Hop(1, 92.6f); h.Hop(1, 96.6f); h.Hop(1, 100.6f);
             h.Check("Crumbling stones", h.Y > 21.2f);
-            var mover = UnityEngine.Object.FindAnyObjectByType<Rift.Gadgets.MovingPlatform>().GetComponent<Rigidbody2D>();
             for (int i = 0; i < 600 && mover.position.x > 105.4f; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); }
             h.Motor.PressJump(); h.Motor.SetMove(1);
             for (int i = 0; i < 70; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); if (h.X > mover.position.x - 0.2f) h.Motor.SetMove(0); }
@@ -190,7 +193,8 @@ namespace Rift.EditorTools
             {
                 h.Lens(0, 60); Bounds b = floor.GetComponent<RiftSolid>().Bounds; h.Tp(b.center.x, b.max.y + 0.6f);
                 h.Step(45); bool fell = floor.Current == Rift.Gadgets.CrumblingFloor.State.Fallen;
-                h.Step(170); bool back = floor.Current == Rift.Gadgets.CrumblingFloor.State.Solid;
+                bool back = false;
+                for (int i = 0; i < 300 && !back; i++) { h.Step(1); back = floor.Current == Rift.Gadgets.CrumblingFloor.State.Solid; }
                 results.Add(new CheckResult { Passed = fell && back, Name = $"Crumbling floor '{floor.name}' falls then returns", Detail = $"fell={fell} back={back}" });
             }
             foreach (var door in UnityEngine.Object.FindObjectsByType<Rift.Gadgets.SwitchDoor>())
