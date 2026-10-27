@@ -3,24 +3,29 @@ using UnityEngine;
 
 namespace Rift.Fx
 {
-    /// <summary>Lights up a checkpoint's sprite when it activates, with a short flash.</summary>
+    /// <summary>Wakes the checkpoint's memory shard when it activates: it lights up, rings pulse out, sparks fly.</summary>
     public class CheckpointGlow : MonoBehaviour
     {
+        static readonly int LitId = Shader.PropertyToID("_Lit");
+        static readonly int PulseId = Shader.PropertyToID("_Pulse");
+        static readonly int SeedId = Shader.PropertyToID("_Seed");
+
         [SerializeField] private Checkpoint _checkpoint;
-        [SerializeField] private SpriteRenderer _sprite;
-        [SerializeField] private Color _idle = new(0.45f, 0.25f, 0.3f);
-        [SerializeField] private Color _lit = new(1f, 0.85f, 0.55f);
-        [SerializeField] private float _flashScale = 1.6f;
-        [SerializeField] private float _settleSharpness = 8f;
+        [SerializeField] private Renderer _shard;
+        [SerializeField] private float _wakeTime = 0.6f;
+        [SerializeField] private float _pulseTime = 1.1f;
         [SerializeField] private ParticleSystem _burst;
         [SerializeField] private int _burstCount = 30;
 
-        private Vector3 _baseScale;
+        private MaterialPropertyBlock _block;
+        private float _lit;
+        private float _pulse;
 
         private void Awake()
         {
-            _baseScale = _sprite.transform.localScale;
-            _sprite.color = _idle;
+            _block = new MaterialPropertyBlock();
+            _block.SetFloat(SeedId, transform.position.x * 0.37f);
+            Apply();
         }
 
         private void OnEnable() => _checkpoint.Activated += OnActivated;
@@ -28,16 +33,22 @@ namespace Rift.Fx
 
         private void OnActivated()
         {
-            _sprite.color = _lit * 1.6f;
-            _sprite.transform.localScale = _baseScale * _flashScale;
+            _pulse = 0.0001f;
             if (_burst != null) _burst.Emit(_burstCount);
         }
 
         private void Update()
         {
-            float t = 1f - Mathf.Exp(-_settleSharpness * Time.deltaTime);
-            _sprite.transform.localScale = Vector3.Lerp(_sprite.transform.localScale, _baseScale, t);
-            if (_checkpoint.IsActive) _sprite.color = Color.Lerp(_sprite.color, _lit, t);
+            if (_checkpoint.IsActive) _lit = Mathf.MoveTowards(_lit, 1f, Time.deltaTime / _wakeTime);
+            if (_pulse > 0f) _pulse = _pulse >= 1f ? 0f : Mathf.Min(1f, _pulse + Time.deltaTime / _pulseTime);
+            Apply();
+        }
+
+        private void Apply()
+        {
+            _block.SetFloat(LitId, _lit);
+            _block.SetFloat(PulseId, _pulse);
+            _shard.SetPropertyBlock(_block);
         }
     }
 }

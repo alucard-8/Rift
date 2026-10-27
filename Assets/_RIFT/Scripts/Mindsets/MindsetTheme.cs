@@ -21,6 +21,8 @@ namespace Rift.Mindsets
         public Material backgroundMaterial;
         [ColorUsage(true, true)] public Color emberTextColor = new(1.3f, 1.1f, 0.9f, 1f);
         [ColorUsage(true, true)] public Color staticTextColor = new(0.4f, 1.8f, 2.2f, 1f);
+        [Tooltip("Signature colour of this level: checkpoints, the rift gate, the soul's light.")]
+        [ColorUsage(true, true)] public Color accentColor = new(2.2f, 1.2f, 0.5f, 1f);
         [Tooltip("Glowing TMP material for each voice's wall text.")]
         public Material emberTextMaterial;
         public Material staticTextMaterial;
