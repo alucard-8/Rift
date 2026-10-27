@@ -1,4 +1,5 @@
 // Sprite that belongs to one reality. Ember is visible outside the lens, Static only inside.
+// Texturing is done in world space so stretched platforms keep a consistent texel density.
 Shader "RIFT/WorldSprite"
 {
     Properties
@@ -7,7 +8,11 @@ Shader "RIFT/WorldSprite"
         [Enum(Ember,0,Static,1)] _World ("World", Float) = 0
         _ShadowColor ("Shadow Color", Color) = (0.23, 0.08, 0.20, 1)
         _LightColor ("Light Color", Color) = (1.0, 0.55, 0.25, 1)
-        _RimColor ("Boundary Glow", Color) = (1.0, 0.85, 0.6, 1)
+        [HDR] _EdgeColor ("Edge Color (Ember top rim / Static outline)", Color) = (1.5, 1.2, 0.85, 1)
+        [HDR] _GridColor ("Grid Color (Static)", Color) = (0.2, 1.2, 1.6, 1)
+        [HDR] _RimColor ("Boundary Glow", Color) = (1.0, 0.85, 0.6, 1)
+        _EdgeWidth ("Edge Width (world)", Float) = 0.1
+        _TextureScale ("Texture Scale", Float) = 1.2
         _NoiseScale ("Dissolve Noise Scale", Float) = 6
         _ScanlineDensity ("Scanlines (Static)", Float) = 90
         _Flicker ("Flicker (Static)", Range(0, 1)) = 0.12
@@ -34,14 +39,25 @@ Shader "RIFT/WorldSprite"
                 float  _World;
                 half4  _ShadowColor;
                 half4  _LightColor;
+                half4  _EdgeColor;
+                half4  _GridColor;
                 half4  _RimColor;
+                float  _EdgeWidth;
+                float  _TextureScale;
                 float  _NoiseScale;
                 float  _ScanlineDensity;
                 float  _Flicker;
             CBUFFER_END
 
             struct Attributes { float4 positionOS : POSITION; float2 uv : TEXCOORD0; half4 color : COLOR; };
-            struct Varyings   { float4 positionCS : SV_POSITION; float2 uv : TEXCOORD0; half4 color : COLOR; float2 worldPos : TEXCOORD1; };
+            struct Varyings
+            {
+                float4 positionCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
+                half4 color : COLOR;
+                float2 worldPos : TEXCOORD1;
+                float2 worldSize : TEXCOORD2;
+            };
 
             Varyings vert (Attributes i)
             {
@@ -51,7 +67,50 @@ Shader "RIFT/WorldSprite"
                 o.worldPos = world.xy;
                 o.uv = i.uv;
                 o.color = i.color;
+                // Object scale from the model matrix columns (the square sprite is 1x1 units).
+                o.worldSize = float2(length(UNITY_MATRIX_M._m00_m10_m20), length(UNITY_MATRIX_M._m01_m11_m21));
                 return o;
+            }
+
+            half3 EmberSurface(Varyings i, float dTop, float dBottom)
+            {
+                float2 p = i.worldPos * _TextureScale;
+                // Horizontal brush strokes: stretched fbm plus a finer grain.
+                float strokes = RiftFbm(float2(p.x * 0.6, p.y * 3.2));
+                float grain = RiftNoise(p * 9.0);
+                float shade = saturate(0.25 + strokes * 0.75 + (grain - 0.5) * 0.12);
+
+                // Darker the deeper we go below the top surface.
+                float depth = saturate(dTop / 1.8) * 0.6;
+                half3 col = lerp(_LightColor.rgb, _ShadowColor.rgb, saturate(depth * 0.9 + (1.0 - shade) * 0.45));
+
+                // Warm light catching the top edge, cool shadow at the bottom.
+                float rimNoise = RiftNoise(float2(i.worldPos.x * 6.0, 0.0)) * 0.05;
+                col = lerp(col, _EdgeColor.rgb, smoothstep(_EdgeWidth + rimNoise, 0.0, dTop));
+                col *= lerp(0.55, 1.0, smoothstep(0.0, 0.3, dBottom));
+                return col;
+            }
+
+            half3 StaticSurface(Varyings i, float dEdge, float t)
+            {
+                half3 col = _ShadowColor.rgb;
+
+                // World-space grid, anti-aliased with fwidth.
+                float2 gp = i.worldPos * 2.0;
+                float2 g = abs(frac(gp) - 0.5);
+                float2 w = fwidth(gp) * 1.2;
+                float grid = max(smoothstep(w.x, 0.0, g.x - 0.0), smoothstep(w.y, 0.0, g.y - 0.0));
+                col += _GridColor.rgb * grid * 0.6;
+
+                // Faint inner fill pulse.
+                col += _LightColor.rgb * 0.08 * (0.5 + 0.5 * sin(t * 2.0 + i.worldPos.x * 0.7));
+
+                // Hot outline that bloom picks up.
+                col = lerp(col, _EdgeColor.rgb, smoothstep(_EdgeWidth, _EdgeWidth * 0.3, dEdge));
+
+                half scan = 0.85 + 0.15 * sin(i.worldPos.y * _ScanlineDensity + t * 8.0);
+                half flick = 1.0 - _Flicker * step(0.93, RiftHash(float2(floor(t * 18.0), 7.0)));
+                return col * scan * flick;
             }
 
             half4 frag (Varyings i) : SV_Target
@@ -61,16 +120,14 @@ Shader "RIFT/WorldSprite"
                 float inside = RiftMask(i.worldPos, _NoiseScale, t * 0.6);
                 float visible = _World > 0.5 ? inside : 1.0 - inside;
 
-                // Two-tone grade: luminance picks between the world's shadow and light colours.
-                half lum = dot(tex.rgb, half3(0.299, 0.587, 0.114));
-                half3 col = lerp(_ShadowColor.rgb, _LightColor.rgb, saturate(lum * 1.1 + (i.uv.y - 0.5) * 0.25));
+                // Distances to each edge in world units.
+                float dTop = (1.0 - i.uv.y) * i.worldSize.y;
+                float dBottom = i.uv.y * i.worldSize.y;
+                float dSide = min(i.uv.x, 1.0 - i.uv.x) * i.worldSize.x;
+                float dEdge = min(min(dTop, dBottom), dSide);
 
-                if (_World > 0.5)
-                {
-                    half scan = 0.85 + 0.15 * sin(i.worldPos.y * _ScanlineDensity + t * 8.0);
-                    half flick = 1.0 - _Flicker * step(0.93, RiftHash(float2(floor(t * 18.0), 7.0)));
-                    col *= scan * flick;
-                }
+                half3 col = _World > 0.5 ? StaticSurface(i, dEdge, t) : EmberSurface(i, dTop, dBottom);
+                col *= tex.rgb;
 
                 // Hot glow where the world is dissolving at the rim.
                 half band = visible * (1.0 - visible) * 4.0;

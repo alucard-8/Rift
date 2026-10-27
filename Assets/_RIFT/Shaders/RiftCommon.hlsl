@@ -23,6 +23,20 @@ float RiftNoise(float2 p)
                 lerp(RiftHash(i + float2(0, 1)), RiftHash(i + float2(1, 1)), u.x), u.y);
 }
 
+// Fractal Brownian motion, 4 octaves.
+float RiftFbm(float2 p)
+{
+    float v = 0.0;
+    float a = 0.5;
+    for (int i = 0; i < 4; i++)
+    {
+        v += a * RiftNoise(p);
+        p = p * 2.03 + float2(17.1, 9.2);
+        a *= 0.5;
+    }
+    return v;
+}
+
 // Signed distance from the lens rim: < 0 inside, > 0 outside.
 float RiftDistance(float2 worldPos)
 {
