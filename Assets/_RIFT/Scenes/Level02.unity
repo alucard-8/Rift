@@ -3410,7 +3410,7 @@ Transform:
   m_GameObject: {fileID: 212168585}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.8, z: 0}
+  m_LocalPosition: {x: 0, y: 3.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20124,7 +20124,7 @@ Transform:
   m_GameObject: {fileID: 1596029912}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.8, z: 0}
+  m_LocalPosition: {x: 0, y: 3.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20998,9 +20998,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997e2d47c103e3c4384a03e6271f31d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rift.Levels.Goal
---- !u!4 &1870093076 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4464268689297065427, guid: d9733e0403448694389cb814380ceb6a, type: 3}
+--- !u!23 &1870093076 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1834598988685520774, guid: d9733e0403448694389cb814380ceb6a, type: 3}
   m_PrefabInstance: {fileID: 1870093074}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1870093077 stripped
@@ -21026,11 +21026,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rift.Fx.GoalFx
   _goal: {fileID: 1870093075}
+  _gate: {fileID: 1870093076}
   _motes: {fileID: 1596029913}
   _burst: {fileID: 212168586}
   _burstCount: 80
-  _visual: {fileID: 1870093076}
-  _sealedScale: 1.6
+  _idleOpen: 1
+  _sealedOpen: 3.5
+  _openTime: 2
 --- !u!1 &1934995070
 GameObject:
   m_ObjectHideFlags: 0
