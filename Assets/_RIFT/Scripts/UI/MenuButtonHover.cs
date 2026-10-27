@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,6 +19,8 @@ namespace Rift.UI
         private Vector2 _basePos;
         private float _underlineWidth;
 
+        public event Action Hovered;
+
         private void Awake()
         {
             _basePos = _label.rectTransform.anchoredPosition;
@@ -26,7 +29,12 @@ namespace Rift.UI
             _underline.sizeDelta = new Vector2(0f, _underline.sizeDelta.y);
         }
 
-        public void OnPointerEnter(PointerEventData eventData) => _hovered = true;
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _hovered = true;
+            Hovered?.Invoke();
+        }
+
         public void OnPointerExit(PointerEventData eventData) => _hovered = false;
 
         private void Update()
