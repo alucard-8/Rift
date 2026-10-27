@@ -573,8 +573,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: what if the ground isn't there?
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3390,8 +3390,8 @@ MonoBehaviour:
 
     you just can''t see it yet.'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3689,8 +3689,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00:00.0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9568,8 +9568,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: walls are safer than doors.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -12408,8 +12408,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: climb what you can't prove.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -12568,8 +12568,8 @@ MonoBehaviour:
 
     why move?'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -20505,8 +20505,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: RIFT SEALED
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -23511,7 +23511,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 391991650
-  m_SortingOrder: -3
+  m_SortingOrder: 30
   m_TargetDisplay: 0
 --- !u!1 &1591141430
 GameObject:
@@ -25959,8 +25959,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -26471,8 +26471,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: turn back.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -26634,7 +26634,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Rift.Audio.MusicPlayer
   _bank: {fileID: 11400000, guid: 1137ff9684e336c49951bf6e6186b87d, type: 2}
-  _fadeInTime: 1.5
+  _track: 1
+  _fadeTime: 2
 --- !u!82 &1750614017
 AudioSource:
   m_ObjectHideFlags: 0
@@ -26808,8 +26809,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: step.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -30091,8 +30092,8 @@ MonoBehaviour:
 
     you haven''t questioned.'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -30229,8 +30230,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0 deaths
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
+  m_sharedMaterial: {fileID: 6685332886750349260, guid: de97aded0d8fe0f47a625a3f3baae6c3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
