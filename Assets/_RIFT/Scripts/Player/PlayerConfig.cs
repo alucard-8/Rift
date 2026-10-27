@@ -22,6 +22,30 @@ namespace Rift.Player
         [Min(0f)] public float coyoteTime = 0.1f;
         [Min(0f)] public float jumpBuffer = 0.12f;
 
+        [Tooltip("Gravity is multiplied by this near the top of a held jump (apex hang).")]
+        [Range(0.1f, 1f)] public float apexGravityMultiplier = 0.55f;
+        [Tooltip("Vertical speed under which the apex hang applies.")]
+        [Min(0f)] public float apexThreshold = 1.6f;
+
+        [Header("Double jump")]
+        public bool allowDoubleJump = true;
+        [Min(0)] public int airJumps = 1;
+        [Min(0.1f)] public float doubleJumpHeight = 2.2f;
+
+        [Header("Dash")]
+        public bool allowDash = true;
+        [Min(0f)] public float dashSpeed = 19f;
+        [Min(0f)] public float dashTime = 0.14f;
+        [Min(0f)] public float dashCooldown = 0.35f;
+
+        [Header("Wall")]
+        public bool allowWallJump = true;
+        [Min(0f)] public float wallSlideSpeed = 2.6f;
+        [Min(0.1f)] public float wallJumpHeight = 2.6f;
+        [Min(0f)] public float wallJumpPush = 8f;
+        [Min(0f)] public float wallJumpControlLock = 0.14f;
+        [Min(0.01f)] public float wallCheckDepth = 0.08f;
+
         [Header("Ground check")]
         public Vector2 groundCheckSize = new(0.5f, 0.08f);
         [Min(0f)] public float groundCheckOffset = 0.02f;

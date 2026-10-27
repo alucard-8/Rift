@@ -17,15 +17,23 @@ namespace Rift.Fx
         {
             _motor.Jumped += OnJumped;
             _motor.Landed += OnLanded;
+            _motor.DoubleJumped += OnJumped;
+            _motor.WallJumped += OnWallJumped;
+            _motor.Dashed += OnDashed;
         }
 
         private void OnDisable()
         {
             _motor.Jumped -= OnJumped;
             _motor.Landed -= OnLanded;
+            _motor.DoubleJumped -= OnJumped;
+            _motor.WallJumped -= OnWallJumped;
+            _motor.Dashed -= OnDashed;
         }
 
         private void OnJumped() => Puff(_jumpCount, 1.2f);
+        private void OnWallJumped(float away) => Puff(_jumpCount + 4, 1.6f);
+        private void OnDashed(float dir) => Puff(_jumpCount + 6, 3f);
 
         private void OnLanded(float speed)
         {

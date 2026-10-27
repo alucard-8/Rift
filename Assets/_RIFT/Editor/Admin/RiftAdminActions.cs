@@ -141,6 +141,17 @@ namespace Rift.EditorTools
 
         public static void Jump() { Player.PressJump(); EditorApplication.delayCall += () => Player?.ReleaseJump(); }
         public static void DieAndRespawn() => Player?.GetComponent<PlayerRespawn>().Respawn();
+        public static void Dash() => Player?.PressDash();
+
+        public static void DoubleJump()
+        {
+            Player.PressJump();
+            EditorApplication.delayCall += () => { Player?.ReleaseJump(); EditorApplication.delayCall += () => { Player?.PressJump(); EditorApplication.delayCall += () => Player?.ReleaseJump(); }; };
+        }
+
+        // Ability toggles edit the shared PlayerConfig asset; the window restores them when play mode ends.
+        public static bool Ability(string field) => Player != null && R.Get<bool>(Player.Config, field);
+        public static void SetAbility(string field, bool on) { if (Player != null) R.Set(Player.Config, field, on); }
 
         public static void LightNextCheckpoint()
         {
