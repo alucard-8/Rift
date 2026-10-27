@@ -12,6 +12,8 @@ namespace Rift.Fx
         [SerializeField] private Color _lit = new(1f, 0.85f, 0.55f);
         [SerializeField] private float _flashScale = 1.6f;
         [SerializeField] private float _settleSharpness = 8f;
+        [SerializeField] private ParticleSystem _burst;
+        [SerializeField] private int _burstCount = 30;
 
         private Vector3 _baseScale;
 
@@ -28,6 +30,7 @@ namespace Rift.Fx
         {
             _sprite.color = _lit * 1.6f;
             _sprite.transform.localScale = _baseScale * _flashScale;
+            if (_burst != null) _burst.Emit(_burstCount);
         }
 
         private void Update()
