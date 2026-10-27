@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed10d68cf24f5b146b5eeb7ce2cb9ba7, type: 3}
+  m_Name: Mindset_RegretAcceptance
+  m_EditorClassIdentifier: Assembly-CSharp::Rift.Mindsets.MindsetTheme
+  emberMindset: REGRET
+  staticMindset: ACCEPTANCE
+  healthyWorld: 1
+  emberMaterial: {fileID: 2100000, guid: f3b01925cb9d4d94980728a31ad9764d, type: 2}
+  staticMaterial: {fileID: 2100000, guid: 8902e3ee674f9b446ab8f28c979bb121, type: 2}
+  backgroundMaterial: {fileID: 2100000, guid: ae3e0e8a870dcd54abddb3ea39d53a06, type: 2}
+  emberTextColor: {r: 0.7, g: 0.85, b: 1.1, a: 1}
+  staticTextColor: {r: 1.8, g: 1.4, b: 0.7, a: 1}
+  resolutionTitle: ACCEPTANCE
+  resolutionLine: you didn't erase the past. you stopped living in it.

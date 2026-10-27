@@ -1,6 +1,6 @@
 # Audio credits
 
-- Sound effects: **Kenney** — "Sci-fi Sounds" and "Impact Sounds" packs, https://kenney.nl (CC0 1.0).
+- Sound effects: **Kenney** — "Sci-fi Sounds" and "Impact Sounds" packs, https://kenney.nl (CC0 1.0). Glitch sounds use the soft "impactGlass" clips.
 - Title music: **"First Light Particles" by Yoiyami**, https://opengameart.org/node/182244 (CC0 1.0).
 - Level music: **"Contemplation" by Joth**, https://opengameart.org/content/contemplation-0 (CC0 1.0).
 - Previous music (no longer used): "Synthwave House Loop" by Fupi, https://opengameart.org/content/synthwave-house-loop (CC0 1.0).

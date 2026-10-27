@@ -41,7 +41,7 @@ namespace Rift.UI
             _showEnd = true;
             string d = deaths == 1 ? "1 death" : $"{deaths} deaths";
             _endTitle.text = _theme.resolutionTitle;
-            _endStats.text = $"<size=55%>{_theme.resolutionLine}</size>\n{FormatTime(time)}  ·  {d}\n<size=60%>[R] restart   ·   [esc] title</size>";
+            _endStats.text = $"<size=55%>{_theme.resolutionLine}</size>\n{FormatTime(time)}  ·  {d}\n<size=60%>[space] continue   ·   [R] restart   ·   [esc] title</size>";
         }
 
         private static string FormatTime(float t) => $"{(int)(t / 60f):00}:{t % 60f:00.0}";
