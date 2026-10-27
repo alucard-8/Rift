@@ -42,12 +42,12 @@ MonoBehaviour:
     pitchJitter: 0
   glitchMaterialize:
     clip: {fileID: 8300000, guid: c07b9f53125edc74a96b7e3197730e5c, type: 3}
-    volume: 0.45
-    pitchJitter: 0.1
+    volume: 0.18
+    pitchJitter: 0.08
   glitchCrushed:
     clip: {fileID: 8300000, guid: a3ac2af4f009a6b45b486c0242622cfa, type: 3}
-    volume: 0.8
-    pitchJitter: 0.06
+    volume: 0.35
+    pitchJitter: 0.05
   uiHover:
     clip: {fileID: 8300000, guid: f4aefbaedc56e16479c4a5641accc53d, type: 3}
     volume: 0.35
