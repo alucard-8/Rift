@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -20,6 +21,9 @@ namespace Rift.Mindsets
         [SerializeField] private RectTransform _caret;
         [SerializeField] private float _triggerRange = 9f;
         [SerializeField] private float _charsPerSecond = 16f;
+        [Tooltip("Optional soft glow card behind the line; fades in as the line writes.")]
+        [SerializeField] private UnityEngine.UI.Graphic _card;
+        [SerializeField] private float _cardAlpha = 0.55f;
 
         [Header("Writing")]
         [Tooltip("Characters fade in over this many characters of typing.")]
@@ -28,6 +32,8 @@ namespace Rift.Mindsets
         [SerializeField] private float _popScale = 0.3f;
         [Tooltip("How many characters a fresh letter stays white-hot for.")]
         [SerializeField] private float _flashLength = 6f;
+        [Tooltip("Extra size of the letter under the pen, so the eye follows the writing.")]
+        [SerializeField] private float _penScale = 0.55f;
 
         [Header("Breathing")]
         [SerializeField] private float _breathSpeed = 1.4f;
@@ -50,6 +56,9 @@ namespace Rift.Mindsets
         /// <summary>True only if the player came close enough for this line to start writing itself.</summary>
         public bool WasHeard { get; private set; }
 
+        /// <summary>Raised once, the moment the line starts writing itself.</summary>
+        public event Action<WallText> BeganWriting;
+
         /// <summary>Write the whole line at once (used when the rift resolves).</summary>
         public void RevealAll()
         {
@@ -68,6 +77,7 @@ namespace Rift.Mindsets
             Material glow = _theme.TextMaterialFor(_voice);
             if (glow != null) _text.fontSharedMaterial = glow;
             if (_caret != null) _caret.gameObject.SetActive(false);
+            if (_card != null) { Color k = _baseColor; k.a = 0f; _card.color = k; }
         }
 
         private void LateUpdate()
@@ -76,6 +86,7 @@ namespace Rift.Mindsets
             {
                 _started = true;
                 WasHeard = true;
+                BeganWriting?.Invoke(this);
             }
             if (_started) _typed += _charsPerSecond * Time.deltaTime;
 
@@ -103,6 +114,8 @@ namespace Rift.Mindsets
                 float ease = 1f - (1f - appear) * (1f - appear);
                 float rise = (1f - ease) * _riseDistance;
                 float scale = 1f + _popScale * Mathf.Sin(appear * Mathf.PI) * (1f - appear * 0.5f);
+                float pen = Mathf.Clamp01(1f - Mathf.Abs(age - 1f) / 1.5f);   // the letter being written right now
+                scale += _penScale * pen;
                 float flash = 1f - Mathf.Clamp01(age / _flashLength);
 
                 // Once written, the letter breathes, and very rarely stutters.
@@ -132,6 +145,19 @@ namespace Rift.Mindsets
 
             _text.UpdateVertexData(TMP_VertexDataUpdateFlags.All);
             UpdateCaret(info, lastWritten);
+            UpdateCard(info.characterCount);
+        }
+
+        private void UpdateCard(int count)
+        {
+            if (_card == null || count == 0) return;
+            float written = Mathf.Clamp01(_typed / count);
+            float d = Vector2.Distance(_card.transform.position, _lens.Center) - _lens.Radius;
+            float inside = d < 0f ? 1f : 0f;
+            float inWorld = _voice == RiftWorld.Static ? inside : 1f - inside;
+            Color k = _baseColor;
+            k.a = Mathf.MoveTowards(_card.color.a, _cardAlpha * written * inWorld, Time.deltaTime * 2f);
+            _card.color = k;
         }
 
         private void UpdateCaret(TMP_TextInfo info, int lastWritten)

@@ -13,6 +13,7 @@ namespace Rift.Fx
         static readonly int FacingId = Shader.PropertyToID("_Facing");
         static readonly int LookId = Shader.PropertyToID("_Look");
         static readonly int BlinkId = Shader.PropertyToID("_Blink");
+        static readonly int PulseId = Shader.PropertyToID("_PulseColor");
 
         [SerializeField] private PlayerMotor _motor;
         [SerializeField] private Renderer _renderer;
@@ -34,6 +35,11 @@ namespace Rift.Fx
         private float _nextGlance;
         private float _nextBlink;
         private float _blinkEnd;
+
+        private Color _pulse;
+
+        /// <summary>Flash the outline in a voice's colour; it fades on its own.</summary>
+        public void Pulse(Color color) => _pulse = color * 2.2f;
 
         private void Awake()
         {
@@ -76,6 +82,8 @@ namespace Rift.Fx
             _block.SetFloat(FacingId, _facing);
             _block.SetVector(LookId, _look);
             _block.SetFloat(BlinkId, blink);
+            _pulse = Color.Lerp(_pulse, Color.clear, 1f - Mathf.Exp(-1.6f * Time.unscaledDeltaTime));
+            _block.SetColor(PulseId, _pulse);
             _renderer.SetPropertyBlock(_block);
         }
     }

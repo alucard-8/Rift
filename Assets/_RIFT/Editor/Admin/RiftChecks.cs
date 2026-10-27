@@ -231,6 +231,36 @@ namespace Rift.EditorTools
 
         // ---------- static checks (edit or play mode) ----------
 
+        /// <summary>Every wall line has a glow card and is heard by the whisper director and the edge marker;
+        /// a whisper slows time and darkens the edges, and cancelling it puts everything back.</summary>
+        public static List<CheckResult> TextAttention()
+        {
+            if (!EditorApplication.isPlaying) return Fail("Text attention", "Enter play mode in a level first.");
+            var whisper = UnityEngine.Object.FindAnyObjectByType<Rift.Fx.WhisperMoment>();
+            var marker = UnityEngine.Object.FindAnyObjectByType<Rift.UI.UnreadLineMarker>();
+            var lines = UnityEngine.Object.FindObjectsByType<Rift.Mindsets.WallText>();
+            var results = new List<CheckResult>();
+            if (whisper == null || marker == null) return Fail("Text attention", "WhisperMoment or UnreadLineMarker missing from the scene.");
+
+            var heard = AdminReflection.Get<Rift.Mindsets.WallText[]>(whisper, "_lines");
+            var pointed = AdminReflection.Get<Rift.Mindsets.WallText[]>(marker, "_lines");
+            int carded = lines.Count(l => AdminReflection.Get<UnityEngine.UI.Graphic>(l, "_card") != null);
+            results.Add(new CheckResult { Passed = carded == lines.Length, Name = "Every line has a glow card", Detail = $"{carded}/{lines.Length}" });
+            results.Add(new CheckResult { Passed = lines.All(heard.Contains) && lines.All(pointed.Contains), Name = "Whisper + marker know every line", Detail = $"whisper {heard.Length}, marker {pointed.Length}, scene {lines.Length}" });
+
+            bool was = Rift.Fx.WhisperMoment.Enabled;
+            Rift.Fx.WhisperMoment.Enabled = true;
+            whisper.Play(lines[0]);
+            for (int i = 0; i < 20; i++) AdminReflection.Call(whisper, "Tick", 0.05f);
+            var vignette = AdminReflection.Get<CanvasGroup>(whisper, "_vignette");
+            float slow = Time.timeScale, dark = vignette.alpha;
+            results.Add(new CheckResult { Passed = whisper.IsPlaying && slow < 0.8f && dark > 0.3f, Name = "Whisper slows time and darkens the edges", Detail = $"timeScale {slow:F2}, vignette {dark:F2}" });
+            AdminReflection.Call(whisper, "Cancel");
+            results.Add(new CheckResult { Passed = !whisper.IsPlaying && Mathf.Approximately(Time.timeScale, 1f) && vignette.alpha == 0f, Name = "Whisper restores time, vignette, camera, music", Detail = $"timeScale {Time.timeScale:F2}, vignette {vignette.alpha:F2}" });
+            Rift.Fx.WhisperMoment.Enabled = was;
+            return results;
+        }
+
         public static List<CheckResult> TextOverlap()
         {
             var solids = UnityEngine.Object.FindObjectsByType<RiftSolid>()

@@ -12,6 +12,7 @@ Shader "RIFT/Soul"
         _BodyColor ("Cloak", Color) = (0.07, 0.045, 0.11, 1)
         [HDR] _RimColor ("Rim Light", Color) = (1.1, 1.0, 1.25, 1)
         [HDR] _EyeColor ("Eyes", Color) = (1.8, 1.7, 1.5, 1)
+        [HDR] _PulseColor ("Voice Pulse (driven by script)", Color) = (0, 0, 0, 0)
     }
 
     SubShader
@@ -34,7 +35,7 @@ Shader "RIFT/Soul"
             CBUFFER_START(UnityPerMaterial)
                 float _Confidence, _Facing, _Blink;
                 float4 _Look;
-                half4 _BodyColor, _RimColor, _EyeColor;
+                half4 _BodyColor, _RimColor, _EyeColor, _PulseColor;
             CBUFFER_END
 
             struct Attributes { float4 positionOS : POSITION; float2 uv : TEXCOORD0; };
@@ -112,6 +113,7 @@ Shader "RIFT/Soul"
 
                 // Pale rim light around the silhouette.
                 col += _RimColor.rgb * smoothstep(0.02, 0.0, abs(body)) * 0.55;
+                col += _PulseColor.rgb * smoothstep(0.12, 0.0, abs(body));   // a voice spoke: the outline answers in its colour
 
                 // Soft aura outside the body that grows with confidence.
                 half3 aura = _RiftAccent.rgb * exp(-max(body, 0.0) * 28.0) * 0.25 * _Confidence;

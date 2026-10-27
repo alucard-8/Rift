@@ -27,6 +27,7 @@ namespace Rift.Audio
 
         [Header("World")]
         public Sound checkpoint;
+        public Sound whisper;
         public Sound goalSeal;
         public Sound glitchMaterialize;
         public Sound glitchCrushed;
