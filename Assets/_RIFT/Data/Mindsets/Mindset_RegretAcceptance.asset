@@ -18,6 +18,7 @@ MonoBehaviour:
   emberMaterial: {fileID: 2100000, guid: f3b01925cb9d4d94980728a31ad9764d, type: 2}
   staticMaterial: {fileID: 2100000, guid: 8902e3ee674f9b446ab8f28c979bb121, type: 2}
   backgroundMaterial: {fileID: 2100000, guid: ae3e0e8a870dcd54abddb3ea39d53a06, type: 2}
+  lensEdgeMaterial: {fileID: 2100000, guid: c103129fb47e4924f9c796e4f1f12f04, type: 2}
   emberTextColor: {r: 0.7, g: 0.85, b: 1.1, a: 1}
   staticTextColor: {r: 1.8, g: 1.4, b: 0.7, a: 1}
   accentColor: {r: 2.4, g: 1.6, b: 0.6, a: 1}

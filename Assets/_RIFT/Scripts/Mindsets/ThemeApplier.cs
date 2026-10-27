@@ -8,6 +8,7 @@ namespace Rift.Mindsets
         [SerializeField] private MindsetTheme _theme;
         [SerializeField] private RiftSolid[] _solids;
         [SerializeField] private Renderer _background;
+        [SerializeField] private Renderer _lensEdge;
 
         public MindsetTheme Theme => _theme;
 
@@ -25,6 +26,9 @@ namespace Rift.Mindsets
 
             if (_background != null && _theme.backgroundMaterial != null)
                 _background.sharedMaterial = _theme.backgroundMaterial;
+
+            if (_lensEdge != null && _theme.lensEdgeMaterial != null)
+                _lensEdge.sharedMaterial = _theme.lensEdgeMaterial;
         }
     }
 }

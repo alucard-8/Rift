@@ -19,6 +19,8 @@ namespace Rift.Mindsets
         public Material emberMaterial;
         public Material staticMaterial;
         public Material backgroundMaterial;
+        [Tooltip("Optional: this level's own lens rim look.")]
+        public Material lensEdgeMaterial;
         [ColorUsage(true, true)] public Color emberTextColor = new(1.3f, 1.1f, 0.9f, 1f);
         [ColorUsage(true, true)] public Color staticTextColor = new(0.4f, 1.8f, 2.2f, 1f);
         [Tooltip("Signature colour of this level: checkpoints, the rift gate, the soul's light.")]

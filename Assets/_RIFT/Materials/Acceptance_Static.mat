@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Acceptance_Static
-  m_Shader: {fileID: 4800000, guid: 0da45e221ecf1ce4aa39a5977a28121b, type: 3}
+  m_Shader: {fileID: 4800000, guid: e76821bdf82fe4640b4af7a590860cb8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -29,15 +29,21 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _CausticScale: 0.35
     - _EdgeWidth: 0.07
     - _Flicker: 0
     - _NoiseScale: 6
+    - _Opacity: 0.95
     - _ScanlineDensity: 40
     - _TextureScale: 1.2
     - _World: 1
     m_Colors:
+    - _BokehColor: {r: 1.8, g: 1.4, b: 0.8, a: 1}
+    - _CausticColor: {r: 1.6, g: 1.25, b: 0.7, a: 1}
     - _CrackColor: {r: 3, g: 1.1, b: 0.3, a: 1}
     - _EdgeColor: {r: 2.3, g: 2, b: 1.5, a: 1}
+    - _GlassHigh: {r: 0.8, g: 0.55, b: 0.28, a: 1}
+    - _GlassLow: {r: 0.32, g: 0.18, b: 0.08, a: 1}
     - _GridColor: {r: 1.5, g: 1.15, b: 0.5, a: 1}
     - _LightColor: {r: 1, g: 0.82, b: 0.5, a: 1}
     - _RimColor: {r: 2, g: 1.5, b: 0.7, a: 1}

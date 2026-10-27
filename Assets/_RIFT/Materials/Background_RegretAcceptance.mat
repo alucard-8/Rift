@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Background_RegretAcceptance
-  m_Shader: {fileID: 4800000, guid: f660d29936bbce04bbf8500efbc3a3f5, type: 3}
+  m_Shader: {fileID: 4800000, guid: 4d4b7bda363f5b54baa5d118a431c504, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -31,16 +31,24 @@ Material:
     - _Rain: 0.85
     - _SunSize: 0.035
     m_Colors:
+    - _DawnLow: {r: 0.85, g: 0.5, b: 0.28, a: 1}
+    - _DawnMid: {r: 0.55, g: 0.33, b: 0.35, a: 1}
+    - _DawnTop: {r: 0.2, g: 0.18, b: 0.35, a: 1}
     - _GridColor: {r: 1.3, g: 0.95, b: 0.6, a: 1}
     - _HillFar: {r: 0.09, g: 0.11, b: 0.16, a: 1}
     - _HillNear: {r: 0.025, g: 0.03, b: 0.045, a: 1}
     - _HorizonGlow: {r: 2.4, g: 1.5, b: 0.6, a: 1}
+    - _MistColor: {r: 0.35, g: 0.4, b: 0.5, a: 1}
+    - _MoonColor: {r: 0.85, g: 0.9, b: 1.05, a: 1}
+    - _NightLow: {r: 0.14, g: 0.17, b: 0.24, a: 1}
+    - _NightTop: {r: 0.02, g: 0.025, b: 0.05, a: 1}
     - _RainColor: {r: 0.55, g: 0.65, b: 0.8, a: 1}
     - _SkyHorizon: {r: 0.2, g: 0.24, b: 0.32, a: 1}
     - _SkyTop: {r: 0.03, g: 0.04, b: 0.08, a: 1}
     - _StaticSky: {r: 0.45, g: 0.5, b: 0.75, a: 1}
-    - _SunColor: {r: 0.85, g: 0.9, b: 1.05, a: 1}
+    - _SunColor: {r: 1.7, g: 1.25, b: 0.7, a: 1}
     - _SunPos: {r: 0.8, g: 0.74, b: 0, a: 0}
     - _VoidColor: {r: 0.42, g: 0.24, b: 0.14, a: 1}
+    - _WindowColor: {r: 1.4, g: 0.95, b: 0.5, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
