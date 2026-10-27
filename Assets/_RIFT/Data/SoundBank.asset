@@ -44,6 +44,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 33ca36d0cd17604438888897d9362e12, type: 3}
     volume: 0.5
     pitchJitter: 0
+  whisper:
+    clip: {fileID: 8300000, guid: 33ca36d0cd17604438888897d9362e12, type: 3}
+    volume: 0.3
+    pitchJitter: 0.02
   goalSeal:
     clip: {fileID: 8300000, guid: 9df245bf56ca5d04197d3bf68e686df7, type: 3}
     volume: 0.8

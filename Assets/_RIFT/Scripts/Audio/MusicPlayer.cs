@@ -25,6 +25,9 @@ namespace Rift.Audio
 
         public AudioSource Source => _source;
 
+        /// <summary>0..1 multiplier on the music volume (1 = full). Whisper moments dip it.</summary>
+        public float Duck { get; set; } = 1f;
+
         private void Awake()
         {
             if (_active != null && _active != this)
@@ -71,7 +74,8 @@ namespace Rift.Audio
                 _source.Play();
             }
 
-            _source.volume = Mathf.MoveTowards(_source.volume, _bank.musicVolume, step);
+            float target = _bank.musicVolume * Duck;
+            _source.volume = Mathf.MoveTowards(_source.volume, target, _source.volume > target ? step * 3f : step);
         }
     }
 }

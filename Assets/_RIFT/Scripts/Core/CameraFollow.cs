@@ -21,6 +21,15 @@ namespace Rift.Core
         private Vector3 _velocity;
         private float _lead;
         private float _focusY;
+        private Vector2 _attention;
+        private float _attentionWeight;
+
+        /// <summary>Lean the camera toward a point (0 = none, 1 = centred on it). Used for whisper moments.</summary>
+        public void SetAttention(Vector2 point, float weight)
+        {
+            _attention = point;
+            _attentionWeight = Mathf.Clamp01(weight);
+        }
 
         private void Awake()
         {
@@ -44,8 +53,12 @@ namespace Rift.Core
             transform.position = Vector3.SmoothDamp(transform.position, Clamp(Desired()), ref _velocity, _smoothTime);
         }
 
-        private Vector3 Desired() =>
-            new(_target.position.x + _lead, _focusY + _verticalOffset, transform.position.z);
+        private Vector3 Desired()
+        {
+            Vector2 follow = new(_target.position.x + _lead, _focusY + _verticalOffset);
+            Vector2 p = Vector2.Lerp(follow, _attention, _attentionWeight);
+            return new Vector3(p.x, p.y, transform.position.z);
+        }
 
         private Vector3 Clamp(Vector3 p)
         {

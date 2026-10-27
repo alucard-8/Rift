@@ -108,7 +108,9 @@ namespace Rift.EditorTools
                 Feature("Checkpoint shard", ("Light next", A.LightNextCheckpoint), ("Light all", A.LightAllCheckpoints), ("Replay pulse", A.ReplayCheckpointPulse));
                 Feature("Rift gate", ("Open", A.OpenGate), ("Reset", A.ResetGate));
                 Feature("Glitches", ("Wake (lens on)", A.WakeGlitches), ("Crush nearest", A.CrushNearestGlitch));
-                Feature("Wall text", ("Rewrite all", A.RewriteWallText), ("Reveal all", A.RevealWallText));
+                Feature("Wall text", ("Rewrite all", A.RewriteWallText), ("Reveal all", A.RevealWallText), ("Whisper next line", A.WhisperNextLine));
+                bool whispers = EditorGUILayout.Toggle("Whisper moments", A.Whispers);
+                if (whispers != A.Whispers) A.Whispers = whispers;
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField("Soul", EditorStyles.boldLabel, GUILayout.Width(110));
                 float c = EditorGUILayout.Slider(_confidence, 0f, 1f);
@@ -126,7 +128,8 @@ namespace Rift.EditorTools
                 Row(("Movement", () => Report("Movement", RiftChecks.Movement())),
                     ("Level run-through", () => Report("Run-through", RiftChecks.RunLevel())),
                     ("Glitch crush", () => Report("Glitch crush", RiftChecks.GlitchCrush())),
-                    ("Gadgets", () => Report("Gadgets", RiftChecks.Gadgets())));
+                    ("Gadgets", () => Report("Gadgets", RiftChecks.Gadgets())),
+                    ("Text attention", () => Report("Text attention", RiftChecks.TextAttention())));
                 Row(("Text overlap", () => Report("Text overlap", RiftChecks.TextOverlap())),
                     ("Scene links", () => Report("Scene links", RiftChecks.SceneReferences())),
                     ("Run all", RunAll));
@@ -152,6 +155,7 @@ namespace Rift.EditorTools
             all.AddRange(RiftChecks.TextOverlap());
             if (EditorApplication.isPlaying)
             {
+                all.AddRange(RiftChecks.TextAttention());
                 all.AddRange(RiftChecks.Movement());
                 all.AddRange(RiftChecks.RunLevel());
                 all.AddRange(RiftChecks.GlitchCrush());

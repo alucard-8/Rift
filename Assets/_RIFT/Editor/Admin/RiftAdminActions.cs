@@ -261,6 +261,17 @@ namespace Rift.EditorTools
             if (g != null) TeleportTo(((Component)g).transform.position + Vector3.left * 2.5f);
         }
 
+        public static void WhisperNextLine()
+        {
+            var whisper = Find<WhisperMoment>();
+            var line = FindAll<WallText>().Where(l => !l.WasHeard)
+                .OrderBy(l => Vector2.Distance(l.transform.position, Player.transform.position)).FirstOrDefault();
+            if (whisper != null && line != null) { RevealWallText(line); whisper.Play(line); }
+        }
+
+        private static void RevealWallText(WallText line) { R.Set(line, "_typed", 0f); R.Set(line, "_started", true); }
+        public static bool Whispers { get => WhisperMoment.Enabled; set => WhisperMoment.Enabled = value; }
+
         public static void Shake() => Find<CameraShake>()?.AddTrauma(0.6f);
         public static void HitStop() => R.Call(Find<HitStop>(), "OnDied");
         public static void DustBurst() => R.Call(Find<PlayerDust>(), "OnLanded", 22f);
