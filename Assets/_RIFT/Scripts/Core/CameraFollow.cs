@@ -2,10 +2,13 @@ using UnityEngine;
 
 namespace Rift.Core
 {
-    /// <summary>Smoothly follows a target with look-ahead, a vertical dead-zone and level bounds.</summary>
-    [RequireComponent(typeof(Camera))]
+    /// <summary>
+    /// Smoothly follows a target with look-ahead, a vertical dead-zone and level bounds.
+    /// Lives on the camera rig; the camera itself is a child so shake can offset it locally.
+    /// </summary>
     public class CameraFollow : MonoBehaviour
     {
+        [SerializeField] private Camera _camera;
         [SerializeField] private Rigidbody2D _target;
         [SerializeField] private BoxCollider2D _bounds;
         [SerializeField] private float _smoothTime = 0.18f;
@@ -14,7 +17,6 @@ namespace Rift.Core
         [SerializeField] private float _verticalDeadZone = 1.2f;
         [SerializeField] private float _verticalOffset = 1f;
 
-        private Camera _camera;
         private Rect _limits;
         private Vector3 _velocity;
         private float _lead;
@@ -22,7 +24,6 @@ namespace Rift.Core
 
         private void Awake()
         {
-            _camera = GetComponent<Camera>();
             // The bounds collider is kept disabled (it's data, not physics), so compute the rect from its shape.
             Vector2 center = _bounds.transform.TransformPoint(_bounds.offset);
             Vector2 size = Vector2.Scale(_bounds.size, _bounds.transform.lossyScale);

@@ -22,6 +22,9 @@ namespace Rift
 
         public RiftWorld World => _world;
 
+        /// <summary>World-space bounds of the platform (read-only, for presentation).</summary>
+        public Bounds Bounds { get; private set; }
+
         private void Awake()
         {
             _filter = ContactFilter2D.noFilter;
@@ -31,6 +34,7 @@ namespace Rift
         private void BuildCells()
         {
             Bounds bounds = GetComponent<SpriteRenderer>().bounds;
+            Bounds = bounds;
             float size = _lens.Config.cellSize;
             int cols = Mathf.Max(1, Mathf.RoundToInt(bounds.size.x / size));
             int rows = Mathf.Max(1, Mathf.RoundToInt(bounds.size.y / size));
