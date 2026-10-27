@@ -21,11 +21,12 @@ namespace Rift
 
         private Vector2 _target;
         private bool _hasOverride;
+        private float _radiusScale = 1f;
 
         public event Action<Vector2> Moved;
 
         public Vector2 Center { get; private set; }
-        public float Radius => _config.radius;
+        public float Radius => _config.radius * _radiusScale;
         public LensConfig Config => _config;
 
         public bool Contains(Vector2 worldPoint) => (worldPoint - Center).sqrMagnitude <= Radius * Radius;
@@ -33,6 +34,9 @@ namespace Rift
         /// <summary>Is a point physically real in the given world right now?</summary>
         public bool IsReal(RiftWorld world, Vector2 worldPoint) =>
             world == RiftWorld.Static ? Contains(worldPoint) : !Contains(worldPoint);
+
+        /// <summary>Grow or shrink the lens at runtime without touching the shared config asset.</summary>
+        public void SetRadiusScale(float scale) => _radiusScale = Mathf.Max(0f, scale);
 
         /// <summary>Pin the lens to a world position (tests, cutscenes). Pass null to follow the pointer again.</summary>
         public void SetOverride(Vector2? worldPoint)
@@ -79,7 +83,7 @@ namespace Rift
         private void Publish()
         {
             Shader.SetGlobalVector(CenterId, Center);
-            Shader.SetGlobalFloat(RadiusId, _config.radius);
+            Shader.SetGlobalFloat(RadiusId, Radius);
             Shader.SetGlobalFloat(EdgeId, _config.edgeWidth);
         }
     }
