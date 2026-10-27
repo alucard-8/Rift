@@ -37,6 +37,25 @@ float RiftFbm(float2 p)
     return v;
 }
 
+// Voronoi edge distance (F2 - F1) — small near cell borders, used for crack networks.
+// After Inigo Quilez, "Voronoi edges" (iquilezles.org/articles/voronoilines, MIT).
+float RiftVoronoiEdge(float2 p)
+{
+    float2 n = floor(p);
+    float2 f = frac(p);
+    float f1 = 8.0, f2 = 8.0;
+    for (int y = -1; y <= 1; y++)
+    for (int x = -1; x <= 1; x++)
+    {
+        float2 g = float2(x, y);
+        float2 o = float2(RiftHash(n + g), RiftHash(n + g + 17.3));
+        float d = length(g + o - f);
+        if (d < f1) { f2 = f1; f1 = d; }
+        else if (d < f2) { f2 = d; }
+    }
+    return f2 - f1;
+}
+
 // Signed distance from the lens rim: < 0 inside, > 0 outside.
 float RiftDistance(float2 worldPos)
 {
