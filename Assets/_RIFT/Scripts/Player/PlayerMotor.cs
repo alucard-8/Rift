@@ -76,6 +76,17 @@ namespace Rift.Player
             Dashed?.Invoke(_dashDir);
         }
 
+        /// <summary>Fling the player straight up (bounce pads). Refills the air jump and dash.</summary>
+        public void Launch(float height)
+        {
+            _dashEnd = float.NegativeInfinity;
+            LaunchUp(height);
+            _isJumping = false;
+            _airJumpsLeft = _config.allowDoubleJump ? _config.airJumps : 0;
+            _dashReady = true;
+            _lastGroundedTime = float.NegativeInfinity;
+        }
+
         /// <summary>Takes the body out of physics entirely (level finished).</summary>
         public void Freeze()
         {
