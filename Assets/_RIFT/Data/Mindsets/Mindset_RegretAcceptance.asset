@@ -20,5 +20,7 @@ MonoBehaviour:
   backgroundMaterial: {fileID: 2100000, guid: ae3e0e8a870dcd54abddb3ea39d53a06, type: 2}
   emberTextColor: {r: 0.7, g: 0.85, b: 1.1, a: 1}
   staticTextColor: {r: 1.8, g: 1.4, b: 0.7, a: 1}
+  emberTextMaterial: {fileID: 2100000, guid: 7466ac21411d442489d3a77fc53cdd3e, type: 2}
+  staticTextMaterial: {fileID: 2100000, guid: c58545882f20f854980bcd355c0c6899, type: 2}
   resolutionTitle: ACCEPTANCE
   resolutionLine: you didn't erase the past. you stopped living in it.
