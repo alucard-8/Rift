@@ -17,7 +17,8 @@ description: Plan, build and verify ONE gameplay feature in RIFT. Use whenever s
    - Read the Unity console: zero errors, no new warnings.
    - Enter play mode and actually exercise the feature (Unity MCP: `manage_editor` play, screenshots via `manage_camera`).
    - Check the edge cases: lens edge, lens off-screen, player inside a platform when the lens leaves it.
-6. **Report** what works, what's not done, and stop. Commit only when the user asks.
+6. **Admin panel.** Add the feature's showcase buttons (`RiftAdminActions` + `RiftAdminWindow`) and, for gameplay logic, a check in `RiftChecks`. Run *Run all* in the panel (or via MCP: `RiftChecks.RunLevel()`) in both levels.
+7. **Report** what works, what's not done, and stop. Commit only when the user asks.
 
 ## RIFT-specific rules
 - Anything that belongs to the other world uses the `RiftMember` component and asks `RiftLens` whether it's inside — never compute the circle test yourself.
