@@ -17,8 +17,14 @@ namespace Rift.Levels
         [SerializeField] private InputActionReference _back;
         [SerializeField] private SceneFader _fader;
         [SerializeField] private int _titleSceneIndex = 0;
+        [SerializeField] private InputActionReference _continue;
+        [Tooltip("Build index loaded when the player continues after finishing (0 = back to title).")]
+        [SerializeField] private int _nextSceneIndex = 0;
+        [Tooltip("Seconds after finishing before continue is accepted, so the ending can play.")]
+        [SerializeField] private float _continueDelay = 2.5f;
 
         private bool _started;
+        private float _completedAt;
 
         public event Action<float, int> Completed;
 
@@ -34,6 +40,8 @@ namespace Rift.Levels
             _restart.action.performed += OnRestart;
             _back.action.Enable();
             _back.action.performed += OnBack;
+            _continue.action.Enable();
+            _continue.action.performed += OnContinue;
         }
 
         private void OnDisable()
@@ -42,6 +50,7 @@ namespace Rift.Levels
             _goal.Reached -= OnGoalReached;
             _restart.action.performed -= OnRestart;
             _back.action.performed -= OnBack;
+            _continue.action.performed -= OnContinue;
         }
 
         private void Update()
@@ -58,6 +67,7 @@ namespace Rift.Levels
         private void OnGoalReached()
         {
             IsComplete = true;
+            _completedAt = Time.unscaledTime;
             _playerInput.enabled = false;
             _player.SetMove(0f);
             _player.Freeze();
@@ -67,5 +77,11 @@ namespace Rift.Levels
         private void OnRestart(InputAction.CallbackContext _) => _fader.ReloadCurrent();
 
         private void OnBack(InputAction.CallbackContext _) => _fader.FadeOutAndLoad(_titleSceneIndex);
+
+        private void OnContinue(InputAction.CallbackContext _)
+        {
+            if (IsComplete && Time.unscaledTime - _completedAt >= _continueDelay)
+                _fader.FadeOutAndLoad(_nextSceneIndex);
+        }
     }
 }

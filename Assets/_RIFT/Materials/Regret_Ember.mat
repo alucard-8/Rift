@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Regret_Ember
+  m_Shader: {fileID: 4800000, guid: 0da45e221ecf1ce4aa39a5977a28121b, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _EdgeWidth: 0.07
+    - _Flicker: 0.12
+    - _NoiseScale: 6
+    - _ScanlineDensity: 90
+    - _TextureScale: 1.1
+    - _World: 0
+    m_Colors:
+    - _CrackColor: {r: 0.45, g: 0.85, b: 1.4, a: 1}
+    - _EdgeColor: {r: 0.95, g: 1.05, b: 1.2, a: 1}
+    - _GridColor: {r: 0.2, g: 1.2, b: 1.6, a: 1}
+    - _LightColor: {r: 0.2, g: 0.23, b: 0.29, a: 1}
+    - _RimColor: {r: 0.7, g: 0.95, b: 1.3, a: 1}
+    - _ShadowColor: {r: 0.04, g: 0.05, b: 0.07, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
