@@ -56,7 +56,6 @@ namespace Rift.EditorTools
             Section(ref _scenes, "Scenes", () =>
             {
                 Row(("Title", () => A.OpenScene("Title")), ("Level01", () => A.OpenScene("Level01")), ("Level02", () => A.OpenScene("Level02")), ("Level03", () => A.OpenScene("Level03")), ("Level04", () => A.OpenScene("Level04")),("Sandbox", () => A.OpenScene("LensSandbox")));
-                Row(("Record trailer clips", TrailerRecorder.RecordAll), ("Open recordings folder", () => EditorUtility.RevealInFinder(TrailerRecorder.Folder)));
                 Row(("▶ Play from Title", A.PlayFromTitle), ("▶ Play this scene", () => EditorApplication.isPlaying = true));
             });
 

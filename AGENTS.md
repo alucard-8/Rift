@@ -1,6 +1,6 @@
 # AGENTS.md — RIFT
 
-Rules for any AI agent (OpenCode) working in this repo. Read this before touching anything.
+Rules for any AI coding agent (OpenCode) working in this repo. Read this before touching anything.
 
 ## The game
 **RIFT** is a 2D platformer. The player moves with the keyboard and holds a **lens** with the mouse.
@@ -59,7 +59,7 @@ Assets/_RIFT/
 - Each feature gets its own branch: `feature/<short-name>` (e.g. `feature/lens-mask`), fixes use `fix/<short-name>`.
 - Small, focused commits. Message format: imperative, ≤ 72 chars, e.g. `Add lens chromatic edge shader`.
 - **Commit and push only when the user asks.** Never force-push, never rewrite pushed history, never delete branches without asking.
-- **No AI co-author lines** (`Co-Authored-By: …` or similar) in commits or PR descriptions. The author is the user.
+- **No AI co-author lines** (`Co-Authored-By: …` lines for an assistant) in commits or PR descriptions. The author is the user.
 - Never commit `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `Builds/`, IDE files — `.gitignore` covers them; don't override it.
 - Always commit `.meta` files together with their assets.
 - Before committing: console has no errors, the scene is saved, `git status` contains only files belonging to this feature.
