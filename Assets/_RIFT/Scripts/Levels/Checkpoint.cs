@@ -13,6 +13,7 @@ namespace Rift.Levels
         public event Action Activated;
 
         public bool IsActive { get; private set; }
+        public Transform SpawnPoint => _spawnPoint != null ? _spawnPoint : transform;
 
         private void Reset() => GetComponent<Collider2D>().isTrigger = true;
 
@@ -20,7 +21,7 @@ namespace Rift.Levels
         {
             if (IsActive || !other.TryGetComponent(out PlayerRespawn respawn)) return;
 
-            respawn.SetSpawnPoint(_spawnPoint != null ? _spawnPoint : transform);
+            respawn.SetSpawnPoint(SpawnPoint);
             IsActive = true;
             Activated?.Invoke();
         }

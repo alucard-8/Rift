@@ -193,6 +193,39 @@ namespace Rift.EditorTools
             return h.Finish();
         }
 
+        /// <summary>First sleeping shard: stirs only when near, takes the spawn when touched, recalls after a death.</summary>
+        public static List<CheckResult> Checkpoints() => Once("Checkpoints", CheckpointsUncached);
+
+        private static List<CheckResult> CheckpointsUncached()
+        {
+            if (!EditorApplication.isPlaying) return Fail("Checkpoints", "Enter play mode in a level first.");
+            Checkpoint cp = RiftAdminActions.Checkpoints().FirstOrDefault(c => !c.IsActive);
+            if (cp == null) return Fail("Checkpoints", "No sleeping checkpoint left — restart the level.");
+            var glow = UnityEngine.Object.FindObjectsByType<Rift.Fx.CheckpointGlow>().First(g => R.Get<Checkpoint>(g, "_checkpoint") == cp);
+            var respawn = UnityEngine.Object.FindAnyObjectByType<PlayerRespawn>();
+            var body = respawn.GetComponent<Rigidbody2D>();
+            var results = new List<CheckResult>();
+            void Put(Vector3 at) { body.position = at; respawn.transform.position = at; }
+            void Tick(int n) { for (int i = 0; i < n; i++) R.Call(glow, "Update"); }
+            void Add(string name, bool ok, string detail) => results.Add(new CheckResult { Passed = ok, Name = name, Detail = detail });
+
+            Put(cp.transform.position + Vector3.left * 20f); Tick(80);
+            Add("Shard stays asleep when you're far", glow.Near < 0.01f, $"near {glow.Near:F2}");
+            Put(cp.transform.position + Vector3.left * 1.5f + Vector3.up * 0.6f); Tick(80);
+            Add("Shard stirs when you come close", glow.Near > 0.3f, $"near {glow.Near:F2}");
+
+            R.Call(cp, "OnTriggerEnter2D", respawn.GetComponent<Collider2D>());
+            Add("Touching it takes the spawn", cp.IsActive && respawn.SpawnPoint == cp.SpawnPoint, $"spawn {respawn.SpawnPoint?.name}");
+            Tick(1);
+            Add("Stirring stops once reached", glow.Near < 0.99f, $"near {glow.Near:F2}");
+
+            Put(cp.transform.position + Vector3.right * 6f + Vector3.up * 3f);
+            respawn.Respawn();
+            Add("Death respawns at the shard", Vector2.Distance(body.position, cp.SpawnPoint.position) < 0.05f, $"player {body.position}");
+            Add("Shard plays the recall", glow.Recall > 0.9f, $"recall {glow.Recall:F2}");
+            return results;
+        }
+
         /// <summary>Double jump, dash and wall jump behave as configured. Run on a fresh play session.</summary>
         public static List<CheckResult> Movement() => Once("Movement", MovementUncached);
 

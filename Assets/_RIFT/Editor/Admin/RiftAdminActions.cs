@@ -169,6 +169,26 @@ namespace Rift.EditorTools
             foreach (CheckpointGlow g in FindAll<CheckpointGlow>()) R.Call(g, "OnActivated");
         }
 
+        /// <summary>Stand a few steps before the next sleeping shard so it stirs.</summary>
+        public static void ApproachNextCheckpoint()
+        {
+            Checkpoint next = Checkpoints().FirstOrDefault(c => !c.IsActive);
+            if (next != null) TeleportTo(next.transform.position + Vector3.left * 3f);
+        }
+
+        public static void RecallNow()
+        {
+            foreach (CheckpointGlow g in FindAll<CheckpointGlow>()) g.PlayRecall();
+        }
+
+        public static void ResetCheckpoints()
+        {
+            foreach (Checkpoint c in Checkpoints()) R.Set(c, "IsActive", false);
+            foreach (CheckpointGlow g in FindAll<CheckpointGlow>()) R.Set(g, "_lit", 0f);
+            GameObject start = GameObject.Find("Start");
+            if (start != null) Player.GetComponent<PlayerRespawn>().SetSpawnPoint(start.transform);
+        }
+
         public static void OpenGate()
         {
             GoalFx fx = Find<GoalFx>();
