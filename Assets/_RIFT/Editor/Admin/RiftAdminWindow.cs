@@ -106,6 +106,7 @@ namespace Rift.EditorTools
                 }
                 EditorGUILayout.EndHorizontal();
                 Feature("Checkpoint shard", ("Light next", A.LightNextCheckpoint), ("Light all", A.LightAllCheckpoints), ("Replay pulse", A.ReplayCheckpointPulse));
+                Feature("", ("Approach next", A.ApproachNextCheckpoint), ("Recall now", A.RecallNow), ("Reset all", A.ResetCheckpoints));
                 Feature("Rift gate", ("Open", A.OpenGate), ("Reset", A.ResetGate));
                 Feature("Glitches", ("Wake (lens on)", A.WakeGlitches), ("Crush nearest", A.CrushNearestGlitch));
                 Feature("Wall text", ("Rewrite all", A.RewriteWallText), ("Reveal all", A.RevealWallText), ("Whisper next line", A.WhisperNextLine));
@@ -133,6 +134,7 @@ namespace Rift.EditorTools
                     ("Text attention", () => Report("Text attention", RiftChecks.TextAttention())));
                 Row(("Text overlap", () => Report("Text overlap", RiftChecks.TextOverlap())),
                     ("Scene links", () => Report("Scene links", RiftChecks.SceneReferences())),
+                    ("Checkpoints", () => Report("Checkpoints", RiftChecks.Checkpoints())),
                     ("Run all", RunAll));
                 if (_results.Count == 0) return;
                 int passed = _results.Count(r => r.Passed);
@@ -158,6 +160,7 @@ namespace Rift.EditorTools
             {
                 all.AddRange(RiftChecks.TextAttention());
                 all.AddRange(RiftChecks.Movement());
+                all.AddRange(RiftChecks.Checkpoints());
                 all.AddRange(RiftChecks.RunLevel());
                 all.AddRange(RiftChecks.GlitchCrush());
             }

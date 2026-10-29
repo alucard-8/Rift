@@ -714,6 +714,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _burst
+      value: 
+      objectReference: {fileID: 522463066}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _shake
+      value: 
+      objectReference: {fileID: 1173395266}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 1491550072}
     - target: {fileID: 2901692006455421048, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 34
@@ -4226,6 +4238,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _burst
+      value: 
+      objectReference: {fileID: 522463066}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _shake
+      value: 
+      objectReference: {fileID: 1173395266}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 1491550072}
     - target: {fileID: 2901692006455421048, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 46
@@ -10967,6 +10991,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _burst
+      value: 
+      objectReference: {fileID: 522463066}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _shake
+      value: 
+      objectReference: {fileID: 1173395266}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 1491550072}
     - target: {fileID: 2901692006455421048, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16
@@ -25088,6 +25124,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _burst
+      value: 
+      objectReference: {fileID: 522463066}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _shake
+      value: 
+      objectReference: {fileID: 1173395266}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 1491550072}
     - target: {fileID: 2901692006455421048, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 65
@@ -26839,6 +26887,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _burst
+      value: 
+      objectReference: {fileID: 522463066}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _shake
+      value: 
+      objectReference: {fileID: 1173395266}
+    - target: {fileID: 2120274013933360245, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 1491550072}
     - target: {fileID: 2901692006455421048, guid: c8222c01feac5be48bd57fce750cdeaf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 88

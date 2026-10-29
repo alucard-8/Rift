@@ -14,6 +14,8 @@ namespace Rift.Player
         public event Action Died;
         public event Action Respawned;
 
+        public Transform SpawnPoint => _spawnPoint;
+
         public void SetSpawnPoint(Transform spawn) => _spawnPoint = spawn;
 
         public void Respawn()
