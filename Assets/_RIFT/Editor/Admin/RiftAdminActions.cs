@@ -276,6 +276,15 @@ namespace Rift.EditorTools
         public static void HitStop() => R.Call(Find<HitStop>(), "OnDied");
         public static void DustBurst() => R.Call(Find<PlayerDust>(), "OnLanded", 22f);
 
+        /// <summary>Level03 ash ground: 0 cold, 1 burning (global shader property read by RIFT/AshSurface).</summary>
+        public static void AshHeat(float heat) => Shader.SetGlobalFloat("_AshHeat", heat);
+
+        public static void AshEmbersBurst()
+        {
+            GameObject embers = GameObject.Find("AshEmbers");
+            if (embers != null) embers.GetComponent<ParticleSystem>().Emit(120);
+        }
+
         public static void ContinueToNext()
         {
             LevelRun run = Find<LevelRun>();

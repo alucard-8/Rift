@@ -55,7 +55,7 @@ namespace Rift.EditorTools
 
             Section(ref _scenes, "Scenes", () =>
             {
-                Row(("Title", () => A.OpenScene("Title")), ("Level01", () => A.OpenScene("Level01")), ("Level02", () => A.OpenScene("Level02")), ("Sandbox", () => A.OpenScene("LensSandbox")));
+                Row(("Title", () => A.OpenScene("Title")), ("Level01", () => A.OpenScene("Level01")), ("Level02", () => A.OpenScene("Level02")), ("Level03", () => A.OpenScene("Level03")), ("Sandbox", () => A.OpenScene("LensSandbox")));
                 Row(("▶ Play from Title", A.PlayFromTitle), ("▶ Play this scene", () => EditorApplication.isPlaying = true));
             });
 
@@ -119,7 +119,8 @@ namespace Rift.EditorTools
                 EditorGUILayout.EndHorizontal();
                 Feature("Ending", ("Resolve rift now", A.ResolveRiftNow), ("Show win screen", A.ShowWinScreen));
                 Feature("Gadgets", ("Go to gadget room", A.TeleportToGadgets), ("Pad launch", A.LaunchFromPad), ("Crumble all", A.CrumbleAll), ("Lens on switch", A.HoldSwitches));
-                Feature("Fx", ("Shake", A.Shake), ("Hit-stop", A.HitStop), ("Dust", A.DustBurst));
+                Feature("Ash (Level03)", ("Cold", () => A.AshHeat(0f)), ("Smoulder", () => A.AshHeat(0.5f)), ("Burning", () => A.AshHeat(1f)), ("Embers burst", A.AshEmbersBurst));
+                Feature("Fx", ("Shake", A.Shake),("Hit-stop", A.HitStop), ("Dust", A.DustBurst));
                 Feature("Level flow", ("Continue", A.ContinueToNext), ("Restart", A.RestartLevel), ("Title", A.BackToTitle));
             });
 
