@@ -108,7 +108,9 @@ namespace Rift.EditorTools
                 Feature("Checkpoint shard", ("Light next", A.LightNextCheckpoint), ("Light all", A.LightAllCheckpoints), ("Replay pulse", A.ReplayCheckpointPulse));
                 Feature("", ("Approach next", A.ApproachNextCheckpoint), ("Recall now", A.RecallNow), ("Reset all", A.ResetCheckpoints));
                 Feature("Rift gate", ("Open", A.OpenGate), ("Reset", A.ResetGate));
-                Feature("Glitches", ("Wake (lens on)", A.WakeGlitches), ("Crush nearest", A.CrushNearestGlitch));
+                Feature("Glitches", ("Wake (lens on)", A.WakeGlitches), ("Crush nearest", A.CrushNearestGlitch), ("Force lunge", A.ForceLunge), ("Show creep", A.ShowCreep));
+                bool frozen = EditorGUILayout.Toggle("Freeze all glitches", A.GlitchesFrozen);
+                if (frozen != A.GlitchesFrozen) A.SetGlitchesFrozen(frozen);
                 Feature("Wall text", ("Rewrite all", A.RewriteWallText), ("Reveal all", A.RevealWallText), ("Whisper next line", A.WhisperNextLine));
                 bool whispers = EditorGUILayout.Toggle("Whisper moments", A.Whispers);
                 if (whispers != A.Whispers) A.Whispers = whispers;
@@ -135,6 +137,7 @@ namespace Rift.EditorTools
                 Row(("Text overlap", () => Report("Text overlap", RiftChecks.TextOverlap())),
                     ("Scene links", () => Report("Scene links", RiftChecks.SceneReferences())),
                     ("Checkpoints", () => Report("Checkpoints", RiftChecks.Checkpoints())),
+                    ("Glitch threat", () => Report("Glitch threat", RiftChecks.GlitchThreat())),
                     ("Run all", RunAll));
                 if (_results.Count == 0) return;
                 int passed = _results.Count(r => r.Passed);
@@ -163,6 +166,7 @@ namespace Rift.EditorTools
                 all.AddRange(RiftChecks.Checkpoints());
                 all.AddRange(RiftChecks.RunLevel());
                 all.AddRange(RiftChecks.GlitchCrush());
+                all.AddRange(RiftChecks.GlitchThreat());
             }
             Report("Run all" + (EditorApplication.isPlaying ? "" : " (edit mode: static checks only)"), all);
         }

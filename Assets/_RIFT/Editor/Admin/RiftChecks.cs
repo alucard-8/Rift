@@ -98,6 +98,10 @@ namespace Rift.EditorTools
             h.Check("Room 1 descend", h.X > 15f && h.Y < -2f);
             h.CarryLens(33f, -3.3f);
             h.Check("Room 2 bridge", h.X > 32f);
+            // Shaft glitch: back to the right wall, bait it into the floor.
+            h.Tp(42.6f, -2.4f); h.Step(10);
+            h.Check("Shaft glitch baited into the rock", h.BaitGlitch(h.NearestGlitch()));
+            h.Check("Survived the shaft glitch", h.Run.Deaths == 0);
             h.Tp(37.5f, -2.4f); h.Step(10);
             h.Lens(40f, 0.6f); h.Step(3); h.Climb(1, 38.5f); h.Check("Shaft ledge 1", h.Y > -0.4f);
             h.Climb(1, 40.1f); h.Check("Shaft ledge 2", h.Y > 2.0f);
@@ -109,6 +113,8 @@ namespace Rift.EditorTools
             h.Lens(58.5f, 10.8f); h.Step(4); h.Jump(30); h.Lens(0, 40); h.Step(30);
             h.Check("Cut the ceiling and climb onto it", h.Y > 11.5f);
             h.WalkUntil(1, 65.3f, 150); h.Step(15);
+            h.Check("Stairs glitch baited into the rock", h.BaitGlitch(h.NearestGlitch(), 200));
+            h.Check("Survived the stairs glitch", h.Run.Deaths == 0);
             for (int i = 0; i < 4; i++) h.StairHop(67.8f + i * 3f);
             h.Check("Gold stairs", h.Y > 18.1f);
             h.StairHop(80.5f); h.Lens(0, 40); h.Step(10);
@@ -149,7 +155,11 @@ namespace Rift.EditorTools
             h.CarryLens(47f, -0.3f);
             h.Check("Room 2 glass bridge", h.X > 46.5f && h.Y > -0.5f);
             // Room 4: up the shaft on six glass ledges, lens between the ledge you're on and the next.
-            h.WalkUntil(1, 59.4f, 200); h.Step(10);
+            // Back to the shaft's right wall, bait the glitch into it.
+            h.WalkUntil(1, 66.6f, 200); h.Step(10);
+            h.Check("Room 4 baited the glitch into the wall", h.BaitGlitch(h.NearestGlitch()));
+            h.Check("Room 4 survived the glitch", h.Run.Deaths == 0);
+            h.WalkUntil(-1, 59.4f, 200); h.Step(10);
             float lx = 59.4f, ly = 0f;
             for (int i = 0; i < 6; i++)
             {
@@ -301,6 +311,68 @@ namespace Rift.EditorTools
             return results;
         }
 
+        /// <summary>A creeping glitch closes in while unseen, winds up and lunges when seen, can be cancelled, and kills.</summary>
+        public static List<CheckResult> GlitchThreat() => Once("GlitchThreat", GlitchThreatUncached);
+
+        private static List<CheckResult> GlitchThreatUncached()
+        {
+            if (!EditorApplication.isPlaying) return Fail("Glitch threat", "Enter play mode in a level first.");
+            var h = new Harness();
+            GlitchEnemy g = h.Glitches.FirstOrDefault(x => x.IsAlive && x.gameObject.activeInHierarchy && R.Get<bool>(x, "_creeps"));
+            if (g == null) { h.Finish(); return Fail("Glitch threat", "No creeping glitch in this level."); }
+            var results = new List<CheckResult>();
+            void Add(string name, bool ok, string detail) => results.Add(new CheckResult { Passed = ok, Name = name, Detail = detail });
+            Vector2 Gp() => g.transform.position;
+            Vector2 Pp() => new(h.X, h.Y + 0.7f);
+            // Stand on the spawn (solid ground) and bring the glitch to us, so nobody falls and respawns mid-test.
+            Vector2 stand = h.Respawn.SpawnPoint.position;
+            void Place(Vector2 offset)
+            {
+                h.Tp(stand.x, stand.y); h.Lens(0, 60);
+                Vector2 at = stand + Vector2.up * 0.7f + offset;
+                g.GetComponent<Rigidbody2D>().position = at; g.transform.position = at;
+                R.Set(g, "_home", at); R.Set(g, "_spawnHome", at);
+                g.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+                R.Call(g, "Enter", GlitchEnemy.Mode.Unseen);
+                h.Step(2);
+            }
+
+            // Unseen: it slides toward you.
+            Place(new Vector2(5f, 1.5f));
+            Vector2 start = Gp();
+            h.Step(100);
+            float closed = Vector2.Dot(Gp() - start, (Pp() - start).normalized);
+            Add("Unseen glitch creeps toward you", closed > 0.5f && g.State == GlitchEnemy.Mode.Unseen, $"moved {closed:F2} toward the player");
+
+            // Seen: windup first (the tell), then a lunge along the locked direction.
+            Place(new Vector2(3f, 1f)); h.Lens(Gp().x + 1.8f, Gp().y); h.Step(1);
+            bool wound = false; for (int i = 0; i < 15 && !wound; i++) { h.Step(1); wound = g.State == GlitchEnemy.Mode.Windup; }
+            Add("Seen glitch winds up before striking", wound, $"state {g.State}");
+            Vector2 aim = (Pp() - Gp()).normalized;
+            bool lunged = false; for (int i = 0; i < 40 && !lunged; i++) { h.Step(1); lunged = g.State == GlitchEnemy.Mode.Lunge; }
+            Add("Then lunges at you", lunged && Vector2.Dot(g.LungeDirection, aim) > 0.8f, $"state {g.State}, aim dot {Vector2.Dot(g.LungeDirection, aim):F2}");
+
+            // Looking away during the windup cancels it.
+            h.Lens(0, 60); h.Step(60);
+            int lunges = 0; void Count() => lunges++;
+            g.Lunged += Count;
+            Place(new Vector2(3f, 1f)); h.Lens(Gp().x + 1.8f, Gp().y);
+            for (int i = 0; i < 15 && g.State != GlitchEnemy.Mode.Windup; i++) h.Step(1);
+            h.Lens(0, 60); h.Step(40);
+            g.Lunged -= Count;
+            Add("Looking away mid-windup cancels the lunge", lunges == 0, $"lunges {lunges}");
+
+            // Careless lens on both of you: the lunge kills.
+            int deaths = h.Run.Deaths;
+            Place(new Vector2(2.2f, 0f));
+            // Lens high over the two of you: covers the glitch and your body, not the ground you stand on.
+            for (int i = 0; i < 80 && h.Run.Deaths == deaths; i++) { float midX = (Gp().x + Pp().x) * 0.5f; h.Lens(midX, Pp().y + 2f); h.Step(1); }
+            Add("A lunge that reaches you kills", h.Run.Deaths > deaths, $"deaths {deaths} -> {h.Run.Deaths}");
+            h.Lens(0, 60);
+            h.Finish();
+            return results;
+        }
+
         public static List<CheckResult> GlitchCrush() => Once("GlitchCrush", GlitchCrushUncached);
 
         private static List<CheckResult> GlitchCrushUncached()
@@ -361,19 +433,35 @@ namespace Rift.EditorTools
             var texts = UnityEngine.Object.FindObjectsByType<TMP_Text>()
                 .Where(t => t.GetComponent<WallText>() != null || t.name.StartsWith("HintSign")).ToList();
             var bad = new List<string>();
+            var rects = new List<Rect>();
             foreach (TMP_Text t in texts)
             {
                 t.ForceMeshUpdate();
                 Bounds b = t.textBounds;
                 Vector3 c = t.transform.TransformPoint(b.center);
                 Vector3 size = Vector3.Scale(b.size, t.transform.lossyScale);
+                rects.Add(new Rect(c.x - size.x * 0.5f, c.y - size.y * 0.5f, size.x, size.y));
                 if (solids.Any(s => Mathf.Abs(c.x - s.center.x) < (size.x + s.size.x) * 0.5f + 0.2f &&
                                     Mathf.Abs(c.y - s.center.y) < (size.y + s.size.y) * 0.5f + 0.2f))
                     bad.Add(t.text.Replace("\n", " "));
             }
+
+            // Lines need breathing room from each other too, even across worlds (both show at the lens rim).
+            var crowded = new List<string>();
+            const float gapX = 0.8f, gapY = 0.6f;
+            for (int i = 0; i < rects.Count; i++)
+            for (int j = i + 1; j < rects.Count; j++)
+            {
+                Rect a = rects[i], b = rects[j];
+                if (Mathf.Abs(a.center.x - b.center.x) < (a.width + b.width) * 0.5f + gapX &&
+                    Mathf.Abs(a.center.y - b.center.y) < (a.height + b.height) * 0.5f + gapY)
+                    crowded.Add($"'{texts[i].text.Replace("\n", " ")}' x '{texts[j].text.Replace("\n", " ")}'");
+            }
+
             return new List<CheckResult>
             {
-                new() { Passed = bad.Count == 0, Name = $"World text clear of platforms ({texts.Count} texts)", Detail = bad.Count == 0 ? "0 overlaps" : string.Join(" | ", bad) }
+                new() { Passed = bad.Count == 0, Name = $"World text clear of platforms ({texts.Count} texts)", Detail = bad.Count == 0 ? "0 overlaps" : string.Join(" | ", bad) },
+                new() { Passed = crowded.Count == 0, Name = "World text not crowding other text", Detail = crowded.Count == 0 ? "all lines have room" : string.Join(" | ", crowded) }
             };
         }
 
@@ -482,6 +570,33 @@ namespace Rift.EditorTools
             }
 
             public void Jump(int frames) { Motor.PressJump(); Step(frames); Motor.ReleaseJump(); }
+
+            public GlitchEnemy NearestGlitch() => Glitches.Where(g => g.IsAlive && g.gameObject.activeInHierarchy)
+                .OrderBy(g => Vector2.Distance(g.transform.position, _body.position)).FirstOrDefault();
+
+            /// <summary>
+            /// Bait a glitch the way a player does: stand with your back to rock, hold the lens still just *behind* the
+            /// glitch (away from you). It winds up and lunges at you, leaves the lens and flies on as a harmless ghost —
+            /// into the rock behind you, which crushes it. Returns true once it's dead.
+            /// </summary>
+            public bool BaitGlitch(GlitchEnemy g, int waitFrames = 120, int tries = 4)
+            {
+                if (g == null) return false;
+                Lens(0, 60); Step(waitFrames);   // let it creep in
+                for (int t = 0; t < tries && g.IsAlive; t++)
+                {
+                    Vector2 gp = g.transform.position;
+                    Vector2 hold = gp + (gp - _body.position).normalized * 2f;
+                    Lens(hold.x, hold.y);
+                    for (int i = 0; i < 90 && g.IsAlive; i++)
+                    {
+                        Step(1);
+                        if (i > 30 && g.State == GlitchEnemy.Mode.Unseen) break;
+                    }
+                    Lens(0, 60); Step(30);
+                }
+                return !g.IsAlive;
+            }
 
             public void CarryLens(float untilX, float lensY)
             {

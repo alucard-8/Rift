@@ -213,6 +213,32 @@ namespace Rift.EditorTools
             if (g != null) R.Call(g, "Die");
         }
 
+        private static GlitchEnemy NearestGlitch() => FindAll<GlitchEnemy>().Where(x => x.IsAlive)
+            .OrderBy(x => Vector2.Distance(x.transform.position, Player.transform.position)).FirstOrDefault();
+
+        /// <summary>Pin the lens on the nearest glitch and start its windup straight away.</summary>
+        public static void ForceLunge()
+        {
+            GlitchEnemy g = NearestGlitch();
+            if (g == null) return;
+            Lens.SetOverride(g.transform.position);
+            R.Call(g, "BeginWindup", (Vector2)(Player.transform.position + Vector3.up * 0.7f - g.transform.position));
+        }
+
+        /// <summary>Pin the lens far away so every glitch goes unseen and creeps (use Follow mouse to undo).</summary>
+        public static void ShowCreep() => Lens.SetOverride((Vector2)Player.transform.position + new Vector2(0f, 60f));
+
+        public static bool GlitchesFrozen => FindAll<GlitchEnemy>().Any(g => !g.enabled);
+
+        public static void SetGlitchesFrozen(bool frozen)
+        {
+            foreach (GlitchEnemy g in FindAll<GlitchEnemy>())
+            {
+                g.enabled = !frozen;
+                g.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+            }
+        }
+
         public static void RewriteWallText()
         {
             foreach (WallText w in FindAll<WallText>())
