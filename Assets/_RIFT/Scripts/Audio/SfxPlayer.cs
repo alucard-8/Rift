@@ -26,7 +26,7 @@ namespace Rift.Audio
 
         public void Play(Sound sound, float volumeScale = 1f)
         {
-            if (sound == null || sound.clip == null) return;
+            if (sound == null || sound.clip == null || !AudioPrefs.SfxOn) return;
 
             AudioSource source = _sources[_next];
             _next = (_next + 1) % _sources.Length;

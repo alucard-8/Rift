@@ -15305,7 +15305,7 @@ MonoBehaviour:
   _fader: {fileID: 845519667}
   _titleSceneIndex: 0
   _continue: {fileID: 9116101238564799192, guid: 43dbdeb3157c2e14daf5f714e5a1a987, type: 3}
-  _nextSceneIndex: 0
+  _nextSceneIndex: 4
   _continueDelay: 2.5
 --- !u!4 &1021445976
 Transform:

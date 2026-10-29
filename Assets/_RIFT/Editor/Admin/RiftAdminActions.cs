@@ -325,6 +325,31 @@ namespace Rift.EditorTools
         /// <summary>Level03 ash ground: 0 cold, 1 burning (global shader property read by RIFT/AshSurface).</summary>
         public static void AshHeat(float heat) => Shader.SetGlobalFloat("_AshHeat", heat);
 
+        /// <summary>Level04: one echo ring through all Hollow stone (global _HollowEcho swept 0 → 1).</summary>
+        public static void HollowEcho() => Sweep("_HollowEcho", 2.5f);
+
+        /// <summary>Level04: every Threads strand flares together (global _ThreadBurst 1 → 0).</summary>
+        public static void ThreadBurst() => Sweep("_ThreadBurst", 1.2f, fromOne: true);
+
+        public static void FrostBurst()
+        {
+            GameObject frost = GameObject.Find("HollowFrost");
+            if (frost != null) frost.GetComponent<ParticleSystem>().Emit(80);
+        }
+
+        // Animates a global shader float over time from the editor (works while playing).
+        private static void Sweep(string property, float seconds, bool fromOne = false)
+        {
+            double start = EditorApplication.timeSinceStartup;
+            void Tick()
+            {
+                float t = (float)((EditorApplication.timeSinceStartup - start) / seconds);
+                if (t >= 1f) { Shader.SetGlobalFloat(property, 0f); EditorApplication.update -= Tick; return; }
+                Shader.SetGlobalFloat(property, fromOne ? 1f - t : t);
+            }
+            EditorApplication.update += Tick;
+        }
+
         public static void AshEmbersBurst()
         {
             GameObject embers = GameObject.Find("AshEmbers");

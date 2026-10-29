@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_RIFT/Scenes/Level03.unity
     guid: cfc52bf0ebf0f9b4593c3e7ccf0436f6
+  - enabled: 1
+    path: Assets/_RIFT/Scenes/Level04.unity
+    guid: 211f819f4612eb14fbd87fee15b31e67
   - enabled: 0
     path: Assets/_RIFT/Scenes/LensSandbox.unity
     guid: 386f57e468bbff2409873e185179c589

@@ -1,22 +1,23 @@
-using TMPro;
 using UnityEngine;
 
 namespace Rift.UI
 {
     /// <summary>
     /// The title glitches when the rift touches it: a cyan/magenta copy of the logo
-    /// appears behind the cream one, jittering sideways, stronger the closer the lens is.
+    /// appears behind the main one, jittering sideways, stronger the closer the lens is.
     /// </summary>
     public class TitleLogo : MonoBehaviour
     {
         [SerializeField] private RiftLens _lens;
-        [SerializeField] private TMP_Text _main;
-        [SerializeField] private TMP_Text _glitchA;
-        [SerializeField] private TMP_Text _glitchB;
+        [SerializeField] private SpriteRenderer _main;
+        [SerializeField] private SpriteRenderer _glitchA;
+        [SerializeField] private SpriteRenderer _glitchB;
         [Tooltip("How far beyond the lens rim the logo still reacts.")]
         [SerializeField] private float _reach = 1.5f;
         [SerializeField] private float _maxJitter = 0.25f;
         [SerializeField] private float _jitterRate = 14f;
+        [Tooltip("Ghost opacity at full strength.")]
+        [Range(0f, 1f)] [SerializeField] private float _ghostAlpha = 0.6f;
 
         private Vector3 _baseA;
         private Vector3 _baseB;
@@ -31,9 +32,7 @@ namespace Rift.UI
 
         private void Update()
         {
-            Bounds b = _main.bounds;
-            b.center += _main.transform.position;
-            Vector2 nearest = b.ClosestPoint(_lens.Center);
+            Vector2 nearest = _main.bounds.ClosestPoint(_lens.Center);
             float rimDistance = Vector2.Distance(nearest, _lens.Center) - _lens.Radius;
             float strength = 1f - Mathf.Clamp01(rimDistance / _reach);
 
@@ -46,8 +45,15 @@ namespace Rift.UI
             float offset = _jitter * _maxJitter * strength;
             _glitchA.transform.localPosition = _baseA + new Vector3(offset + 0.06f * strength, 0f, 0f);
             _glitchB.transform.localPosition = _baseB + new Vector3(-offset - 0.06f * strength, 0f, 0f);
-            _glitchA.alpha = strength;
-            _glitchB.alpha = strength;
+            SetAlpha(_glitchA, strength * _ghostAlpha);
+            SetAlpha(_glitchB, strength * _ghostAlpha);
+        }
+
+        private static void SetAlpha(SpriteRenderer r, float a)
+        {
+            Color c = r.color;
+            c.a = a;
+            r.color = c;
         }
     }
 }
