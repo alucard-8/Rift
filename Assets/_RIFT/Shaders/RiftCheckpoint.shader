@@ -1,9 +1,8 @@
 // Checkpoint "memory shard": a floating crystal that sleeps dim and cracked, then wakes with an inner
 // flame, a soft light beam and expanding rings. Colour comes from the level's accent (_RiftAccent).
-// It stirs when you come close, flares a pillar of light when reached, keeps a rune circle lit on the ground,
+// It stirs when you come close, flares a pillar of light when reached,
 // and flashes a beam down when it calls you back after a death.
 // Polar swirl / fbm after Inigo Quilez (iquilezles.org, MIT); rhombus SDF after IQ's 2D distance functions.
-// Rune ring: polar tick marks on a flattened circle, after the "magic circle" Shadertoy family (e.g. https://www.shadertoy.com/view/4tGXzt).
 Shader "RIFT/Checkpoint"
 {
     Properties
@@ -65,7 +64,6 @@ Shader "RIFT/Checkpoint"
                 half3 accent = _RiftAccent.rgb;
                 // Quad is 1 wide x 2.5 tall: work in a space where x and y units match.
                 float2 p = float2((i.uv.x - 0.5), (i.uv.y - 0.3) * 2.5);
-                float2 ground = p;   // un-bobbed, for things that sit on the floor
                 // Bobs quicker when you're close, as if it's noticed you.
                 p.y -= sin(t * (1.4 + _Near * 1.6)) * _BobAmount * 2.5 * (1.0 + _Near * 0.6);
                 // Lit shards breathe slowly so a row of them doesn't look frozen.
@@ -102,16 +100,6 @@ Shader "RIFT/Checkpoint"
                 float recallBeam = smoothstep(0.12 * _Recall + 0.01, 0.0, abs(p.x)) * step(p.y, 0.4);
                 col += accent * recallBeam * _Recall * 3.0;
 
-                // Rune circle on the ground under the shard: dim outline asleep, lit and slowly turning once reached.
-                float2 g = float2(ground.x, (ground.y + 0.6) * 3.2);
-                float gr = length(g);
-                float ga = atan2(g.y, g.x);
-                float ringA = smoothstep(0.018, 0.0, abs(gr - 0.4));
-                float ringB = smoothstep(0.012, 0.0, abs(gr - 0.31));
-                float ticks = step(0.5, frac(ga * 3.8197 + t * 0.15)) * smoothstep(0.02, 0.0, abs(gr - 0.355)) ;
-                float runes = (ringA + ringB * 0.7 + ticks) * smoothstep(0.0, 0.08, 0.5 - abs(ground.x));
-                col += accent * runes * (_Lit * (0.8 + 0.4 * breath) + _Flare * 1.5 + _Recall * 2.0) + _SleepTint.rgb * runes * 0.25 * (1.0 - _Lit);
-                col += accent * exp(-gr * 6.0) * 0.25 * (_Lit + _Flare);
 
                 // Ground glow + halo around the shard.
                 col += accent * exp(-max(shard, 0.0) * 14.0) * 0.5 * _Lit;
