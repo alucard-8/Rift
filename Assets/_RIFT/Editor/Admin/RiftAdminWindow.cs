@@ -55,7 +55,8 @@ namespace Rift.EditorTools
 
             Section(ref _scenes, "Scenes", () =>
             {
-                Row(("Title", () => A.OpenScene("Title")), ("Level01", () => A.OpenScene("Level01")), ("Level02", () => A.OpenScene("Level02")), ("Level03", () => A.OpenScene("Level03")), ("Sandbox", () => A.OpenScene("LensSandbox")));
+                Row(("Title", () => A.OpenScene("Title")), ("Level01", () => A.OpenScene("Level01")), ("Level02", () => A.OpenScene("Level02")), ("Level03", () => A.OpenScene("Level03")), ("Level04", () => A.OpenScene("Level04")),("Sandbox", () => A.OpenScene("LensSandbox")));
+                Row(("Record trailer clips", TrailerRecorder.RecordAll), ("Open recordings folder", () => EditorUtility.RevealInFinder(TrailerRecorder.Folder)));
                 Row(("▶ Play from Title", A.PlayFromTitle), ("▶ Play this scene", () => EditorApplication.isPlaying = true));
             });
 
@@ -123,7 +124,8 @@ namespace Rift.EditorTools
                 Feature("Ending", ("Resolve rift now", A.ResolveRiftNow), ("Show win screen", A.ShowWinScreen));
                 Feature("Gadgets", ("Go to gadget room", A.TeleportToGadgets), ("Pad launch", A.LaunchFromPad), ("Crumble all", A.CrumbleAll), ("Lens on switch", A.HoldSwitches));
                 Feature("Ash (Level03)", ("Cold", () => A.AshHeat(0f)), ("Smoulder", () => A.AshHeat(0.5f)), ("Burning", () => A.AshHeat(1f)), ("Embers burst", A.AshEmbersBurst));
-                Feature("Fx", ("Shake", A.Shake),("Hit-stop", A.HitStop), ("Dust", A.DustBurst));
+                Feature("Hollow (Level04)", ("Echo ripple", A.HollowEcho), ("Thread pulse", A.ThreadBurst), ("Frost burst", A.FrostBurst));
+                Feature("Fx", ("Shake", A.Shake), ("Hit-stop", A.HitStop), ("Dust", A.DustBurst));
                 Feature("Level flow", ("Continue", A.ContinueToNext), ("Restart", A.RestartLevel), ("Title", A.BackToTitle));
             });
 
@@ -163,10 +165,10 @@ namespace Rift.EditorTools
             {
                 all.AddRange(RiftChecks.TextAttention());
                 all.AddRange(RiftChecks.Movement());
+                all.AddRange(RiftChecks.GlitchThreat());   // before the run-through: a finished level freezes the player
                 all.AddRange(RiftChecks.Checkpoints());
                 all.AddRange(RiftChecks.RunLevel());
                 all.AddRange(RiftChecks.GlitchCrush());
-                all.AddRange(RiftChecks.GlitchThreat());
             }
             Report("Run all" + (EditorApplication.isPlaying ? "" : " (edit mode: static checks only)"), all);
         }

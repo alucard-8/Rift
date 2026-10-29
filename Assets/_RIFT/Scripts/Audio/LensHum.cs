@@ -41,7 +41,7 @@ namespace Rift.Audio
 
             float target = Mathf.Clamp01(speed / _fastSpeed);
             _intensity = Mathf.Lerp(_intensity, target, 1f - Mathf.Exp(-_smoothing * dt));
-            _source.volume = Mathf.Lerp(_idleVolume, _maxVolume, _intensity);
+            _source.volume = AudioPrefs.SfxOn ? Mathf.Lerp(_idleVolume, _maxVolume, _intensity) : 0f;
             _source.pitch = Mathf.Lerp(_pitchRange.x, _pitchRange.y, _intensity);
         }
     }

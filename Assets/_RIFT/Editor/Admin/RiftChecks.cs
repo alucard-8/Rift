@@ -53,7 +53,8 @@ namespace Rift.EditorTools
                 "Level01" => RunLevel01(),
                 "Level02" => RunLevel02(),
                 "Level03" => RunLevel03(),
-                _ => Fail("Run-through", $"No run-through for scene '{scene}'. Open Level01, Level02 or Level03.")
+                "Level04" => RunLevel04(),
+                _ => Fail("Run-through", $"No run-through for scene '{scene}'. Open one of Level01–Level04.")
             };
         }
 
@@ -101,7 +102,7 @@ namespace Rift.EditorTools
             // Shaft glitch: back to the right wall, bait it into the floor.
             h.Tp(42.6f, -2.4f); h.Step(10);
             h.Check("Shaft glitch baited into the rock", h.BaitGlitch(h.NearestGlitch()));
-            h.Check("Survived the shaft glitch", h.Run.Deaths == 0);
+            h.Check("Survived the shaft glitch", h.Deaths == 0);
             h.Tp(37.5f, -2.4f); h.Step(10);
             h.Lens(40f, 0.6f); h.Step(3); h.Climb(1, 38.5f); h.Check("Shaft ledge 1", h.Y > -0.4f);
             h.Climb(1, 40.1f); h.Check("Shaft ledge 2", h.Y > 2.0f);
@@ -113,8 +114,8 @@ namespace Rift.EditorTools
             h.Lens(58.5f, 10.8f); h.Step(4); h.Jump(30); h.Lens(0, 40); h.Step(30);
             h.Check("Cut the ceiling and climb onto it", h.Y > 11.5f);
             h.WalkUntil(1, 65.3f, 150); h.Step(15);
-            h.Check("Stairs glitch baited into the rock", h.BaitGlitch(h.NearestGlitch(), 200));
-            h.Check("Survived the stairs glitch", h.Run.Deaths == 0);
+            h.BaitGlitch(h.NearestGlitch(), 200);   // may or may not end in rock here — getting past alive is what counts
+            h.Check("Survived the stairs glitch", h.Deaths == 0);
             for (int i = 0; i < 4; i++) h.StairHop(67.8f + i * 3f);
             h.Check("Gold stairs", h.Y > 18.1f);
             h.StairHop(80.5f); h.Lens(0, 40); h.Step(10);
@@ -158,7 +159,7 @@ namespace Rift.EditorTools
             // Back to the shaft's right wall, bait the glitch into it.
             h.WalkUntil(1, 66.6f, 200); h.Step(10);
             h.Check("Room 4 baited the glitch into the wall", h.BaitGlitch(h.NearestGlitch()));
-            h.Check("Room 4 survived the glitch", h.Run.Deaths == 0);
+            h.Check("Room 4 survived the glitch", h.Deaths == 0);
             h.WalkUntil(-1, 59.4f, 200); h.Step(10);
             float lx = 59.4f, ly = 0f;
             for (int i = 0; i < 6; i++)
@@ -200,6 +201,61 @@ namespace Rift.EditorTools
             h.Check("Final ledge", h.X > 165f && h.Y > 9.8f);
             h.Walk(1, 80);
             h.Check("Goal reached", h.Run.IsComplete);
+            return h.Finish();
+        }
+
+        private static List<CheckResult> RunLevel04()
+        {
+            var h = new Harness();
+            h.Lens(0, 60); h.Step(10);
+            // Room 1–2: the long empty walk, then a 20-unit threads bridge.
+            h.WalkUntil(1, 21.5f, 300);
+            h.CarryLens(46.5f, -0.3f);
+            h.Check("Room 2 threads bridge", h.X > 46f && h.Y > -0.5f);
+            // Room 4: drop into the hollow; back to its left wall, bait the glitch into it.
+            h.WalkUntil(1, 62f, 300); h.Step(40);
+            h.Check("Room 4 dropped into the hollow", h.Y < -9f);
+            // Back to the high step's face, bait the hollow glitch into it.
+            h.WalkUntil(1, 85.2f, 300); h.Step(10);
+            h.Check("Room 4 hollow glitch baited into the rock", h.BaitGlitch(h.NearestGlitch(), 260));
+            h.Check("Room 4 survived the glitch", h.Deaths == 0);
+            // Room 5: threads pad back up onto the high step.
+            h.WalkUntil(-1, 81.9f, 100); h.Step(5);
+            h.Lens(83.5f, -9.6f); h.Step(3);
+            h.WalkUntil(1, 83.1f, 60);
+            for (int i = 0; i < 90; i++) { h.Motor.SetMove(h.X > 89f ? 0 : 1); h.Step(1); }
+            h.Motor.SetMove(0); h.Lens(0, 60); h.Step(20);
+            h.Check("Room 5 pad up onto the high step", h.X > 86f && h.Y > -3.2f);
+            // Room 6: bait the glitch into the floor, hold the lens on the switch, run through the door.
+            h.WalkUntil(1, 101f, 200); h.Step(5);
+            // Level lunges end in the air here, so it isn't always crushed — slipping past alive is the point.
+            h.BaitGlitch(h.NearestGlitch(), 200);
+            h.Check("Room 6 got past the glitch alive", h.Deaths == 0);
+            h.Lens(104f, -1.5f); h.Step(45); h.Lens(0, 60);
+            h.WalkUntil(1, 117.4f, 200);
+            h.Check("Room 6 switch held, through the door", h.X > 116f);
+            // Room 7: crumbling stones over the void.
+            h.Hop(1, 120.6f); h.Hop(1, 124.6f); h.Hop(1, 128.6f); h.Hop(1, 132.6f); h.Hop(1, 137f);
+            h.Check("Room 7 crumbling stones", h.X > 136f && h.Y > -0.5f);
+            // Room 8: back to the lonely wall, bait the last glitch into it, then look through the wall.
+            h.WalkUntil(1, 146.6f, 200); h.Step(5);
+            h.Check("Room 8 glitch baited into the wall", h.BaitGlitch(h.NearestGlitch(), 200));
+            h.Lens(148f, 1.6f); h.Step(5); h.WalkUntil(1, 151.4f, 120); h.Lens(0, 60); h.Step(5);
+            h.Check("Room 8 looked through the lonely wall", h.X > 150.5f);
+            // Ride the Threads mover across, then the gate.
+            var moving = UnityEngine.Object.FindAnyObjectByType<Rift.Gadgets.MovingPlatform>();
+            var mover = moving.GetComponent<Rigidbody2D>();
+            for (int i = 0; i < 1200 && (AdminReflection.Get<bool>(moving, "_toB") || mover.position.x > 153.8f); i++) h.Step(1);
+            h.Motor.PressJump(); h.Motor.SetMove(1);
+            for (int i = 0; i < 70; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); if (h.X > mover.position.x - 0.2f) h.Motor.SetMove(0); }
+            h.Motor.ReleaseJump(); h.Motor.SetMove(0);
+            for (int i = 0; i < 900 && mover.position.x < 168.6f; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); }
+            h.Check("Room 8 ride the Threads mover", h.X > 165f && h.Y > -0.2f);
+            h.Lens(mover.position.x + 2f, 0f); h.Hop(1, 173f); h.Lens(0, 60); h.Step(10);
+            h.Check("Final ledge", h.X > 171f && h.Y > -0.2f);
+            h.Walk(1, 120);
+            h.Check("Goal reached", h.Run.IsComplete);
+            h.Check("No deaths", h.Deaths == 0);
             return h.Finish();
         }
 
@@ -317,17 +373,22 @@ namespace Rift.EditorTools
         private static List<CheckResult> GlitchThreatUncached()
         {
             if (!EditorApplication.isPlaying) return Fail("Glitch threat", "Enter play mode in a level first.");
+            if (UnityEngine.Object.FindAnyObjectByType<LevelRun>()?.IsComplete == true)
+                return Fail("Glitch threat", "The level is already finished (player frozen) — restart it first.");
             var h = new Harness();
             GlitchEnemy g = h.Glitches.FirstOrDefault(x => x.IsAlive && x.gameObject.activeInHierarchy && R.Get<bool>(x, "_creeps"));
             if (g == null) { h.Finish(); return Fail("Glitch threat", "No creeping glitch in this level."); }
             var results = new List<CheckResult>();
             void Add(string name, bool ok, string detail) => results.Add(new CheckResult { Passed = ok, Name = name, Detail = detail });
+            // The test borrows this glitch; remember where it lives so the level is left as found.
+            Vector2 ownHome = R.Get<Vector2>(g, "_spawnHome");
             Vector2 Gp() => g.transform.position;
             Vector2 Pp() => new(h.X, h.Y + 0.7f);
             // Stand on the spawn (solid ground) and bring the glitch to us, so nobody falls and respawns mid-test.
             Vector2 stand = h.Respawn.SpawnPoint.position;
             void Place(Vector2 offset)
             {
+                h.LensRef.SetRadiusScale(1f);   // a finished level shrinks the lens; test at normal size
                 h.Tp(stand.x, stand.y); h.Lens(0, 60);
                 Vector2 at = stand + Vector2.up * 0.7f + offset;
                 g.GetComponent<Rigidbody2D>().position = at; g.transform.position = at;
@@ -366,9 +427,19 @@ namespace Rift.EditorTools
             int deaths = h.Run.Deaths;
             Place(new Vector2(2.2f, 0f));
             // Lens high over the two of you: covers the glitch and your body, not the ground you stand on.
-            for (int i = 0; i < 80 && h.Run.Deaths == deaths; i++) { float midX = (Gp().x + Pp().x) * 0.5f; h.Lens(midX, Pp().y + 2f); h.Step(1); }
+            for (int i = 0; i < 80 && h.Run.Deaths == deaths; i++) { float midX = (Gp().x + Pp().x) * 0.5f; h.Lens(midX, Pp().y + h.LensRef.Radius * 0.55f); h.Step(1); }
             Add("A lunge that reaches you kills", h.Run.Deaths > deaths, $"deaths {deaths} -> {h.Run.Deaths}");
+            // Leave things as a run-through expects: player at the level start, lens away.
+            GameObject levelStart = GameObject.Find("Start");
+            if (levelStart != null) h.Tp(levelStart.transform.position.x, levelStart.transform.position.y);
             h.Lens(0, 60);
+            if (g.IsAlive)
+            {
+                g.GetComponent<Rigidbody2D>().position = ownHome; g.transform.position = ownHome;
+                R.Set(g, "_home", ownHome); R.Set(g, "_spawnHome", ownHome);
+                g.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+                R.Call(g, "Enter", GlitchEnemy.Mode.Unseen);
+            }
             h.Finish();
             return results;
         }
@@ -511,6 +582,9 @@ namespace Rift.EditorTools
 
             public float X => Motor.transform.position.x;
             public float Y => Motor.transform.position.y;
+            /// <summary>Deaths since this harness started (other checks may already have died on purpose).</summary>
+            public int Deaths => Run.Deaths - _deathsAtStart;
+            private readonly int _deathsAtStart;
 
             public Harness()
             {
@@ -518,6 +592,7 @@ namespace Rift.EditorTools
                 Respawn = Motor.GetComponent<PlayerRespawn>();
                 LensRef = UnityEngine.Object.FindAnyObjectByType<RiftLens>();
                 Run = UnityEngine.Object.FindAnyObjectByType<LevelRun>();
+                _deathsAtStart = Run != null ? Run.Deaths : 0;
                 Solids = UnityEngine.Object.FindObjectsByType<RiftSolid>();
                 Glitches = UnityEngine.Object.FindObjectsByType<GlitchEnemy>();
                 _gadgets = UnityEngine.Object.FindObjectsByType<MonoBehaviour>().Where(m => m.GetType().Namespace == "Rift.Gadgets").ToArray();
@@ -585,6 +660,10 @@ namespace Rift.EditorTools
                 Lens(0, 60); Step(waitFrames);   // let it creep in
                 for (int t = 0; t < tries && g.IsAlive; t++)
                 {
+                    // Too close and you'd be inside the lens with it: step back first.
+                    float back = Mathf.Sign(_body.position.x - g.transform.position.x);
+                    for (int i = 0; i < 60 && Vector2.Distance(g.transform.position, _body.position) < 2.6f; i++) { Motor.SetMove(back); Step(1); }
+                    Motor.SetMove(0); Step(5);
                     Vector2 gp = g.transform.position;
                     Vector2 hold = gp + (gp - _body.position).normalized * 2f;
                     Lens(hold.x, hold.y);

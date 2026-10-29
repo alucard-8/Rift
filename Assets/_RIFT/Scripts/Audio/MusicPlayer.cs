@@ -74,7 +74,7 @@ namespace Rift.Audio
                 _source.Play();
             }
 
-            float target = _bank.musicVolume * Duck;
+            float target = AudioPrefs.MusicOn ? _bank.musicVolume * Duck : 0f;
             _source.volume = Mathf.MoveTowards(_source.volume, target, _source.volume > target ? step * 3f : step);
         }
     }

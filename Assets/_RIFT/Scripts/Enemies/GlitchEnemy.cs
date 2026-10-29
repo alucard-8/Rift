@@ -81,7 +81,8 @@ namespace Rift.Enemies
 
             float dt = Time.fixedDeltaTime;
             _stateTime += dt;
-            Vector2 toPlayer = (Vector2)_player.transform.position + Vector2.up * 0.7f - _body.position;
+            // Aim at the player's middle: a lunge from above carries on into the ground behind them.
+            Vector2 toPlayer = (Vector2)_player.transform.position + Vector2.up * 0.45f - _body.position;
 
             if (!_presence.IsReal) { Creep(toPlayer, dt); return; }
             if (State == Mode.Unseen) Enter(Mode.Idle);
@@ -171,7 +172,8 @@ namespace Rift.Enemies
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!IsAlive || !_presence.IsReal || other.attachedRigidbody == null) return;
+            // Only the lunge kills: you always get the windup tell first.
+            if (!IsAlive || !_presence.IsReal || State != Mode.Lunge || other.attachedRigidbody == null) return;
             if (other.attachedRigidbody.gameObject != _player.gameObject) return;
 
             HitPlayer?.Invoke();

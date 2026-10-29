@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed10d68cf24f5b146b5eeb7ce2cb9ba7, type: 3}
+  m_Name: Mindset_LonelinessConnection
+  m_EditorClassIdentifier: Assembly-CSharp::Rift.Mindsets.MindsetTheme
+  levelLabel: level four
+  emberMindset: LONELINESS
+  staticMindset: CONNECTION
+  healthyWorld: 1
+  emberMaterial: {fileID: 2100000, guid: 5bde3423eb5924644bcc66d2e27b09e7, type: 2}
+  staticMaterial: {fileID: 2100000, guid: eea0872b6c030c94387e52d39a3238f8, type: 2}
+  backgroundMaterial: {fileID: 2100000, guid: 5173b7aa01e68ad428054fe95c01363b, type: 2}
+  lensEdgeMaterial: {fileID: 2100000, guid: b657c2fd625aa2b47b0195cdf79a14aa, type: 2}
+  emberTextColor: {r: 0.75, g: 0.95, b: 1.35, a: 1}
+  staticTextColor: {r: 2.2, g: 1.6, b: 0.8, a: 1}
+  accentColor: {r: 2.2, g: 1.55, b: 0.75, a: 1}
+  emberTextMaterial: {fileID: 2100000, guid: 34f4498246b2261489cbcb407693ff03, type: 2}
+  staticTextMaterial: {fileID: 2100000, guid: ae485540652c4d24aa9e17c78d5dfebd, type: 2}
+  resolutionTitle: CONNECTION
+  resolutionLine: you're not the only one here.

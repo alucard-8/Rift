@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Background_LonelinessConnection
+  m_Shader: {fileID: 4800000, guid: 76b28d015b0f757478983cec45fcf352, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _BeatSpeed: 0.7
+    - _Parallax: 0.02
+    m_Colors:
+    - _FogColor: {r: 0.12, g: 0.15, b: 0.21, a: 1}
+    - _KnotColor: {r: 2.6, g: 1.9, b: 1, a: 1}
+    - _StarColor: {r: 1.6, g: 1.8, b: 2.2, a: 1}
+    - _VoidLow: {r: 0.05, g: 0.07, b: 0.11, a: 1}
+    - _VoidTop: {r: 0.008, g: 0.012, b: 0.025, a: 1}
+    - _WebColor: {r: 1.8, g: 1.2, b: 0.55, a: 1}
+    - _WebLow: {r: 0.14, g: 0.08, b: 0.06, a: 1}
+    - _WebTop: {r: 0.03, g: 0.02, b: 0.04, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
