@@ -21,7 +21,7 @@ namespace Rift.UI
         {
             string ember = ColorUtility.ToHtmlStringRGB(Normalised(_theme.emberTextColor));
             string stat = ColorUtility.ToHtmlStringRGB(Normalised(_theme.staticTextColor));
-            _clash.text = $"<color=#{ember}>{_theme.emberMindset}</color>   <alpha=#66>·</alpha>   <color=#{stat}>{_theme.staticMindset}</color>";
+            _clash.text = $"<color=#{ember}>{_theme.emberMindset}</color>   <color=#FFFFFF66>·</color>   <color=#{stat}>{_theme.staticMindset}</color>";
             _label.text = _theme.levelLabel;
             _group.alpha = 0f;
             _group.blocksRaycasts = false;

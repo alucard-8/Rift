@@ -52,7 +52,8 @@ namespace Rift.EditorTools
             {
                 "Level01" => RunLevel01(),
                 "Level02" => RunLevel02(),
-                _ => Fail("Run-through", $"No run-through for scene '{scene}'. Open Level01 or Level02.")
+                "Level03" => RunLevel03(),
+                _ => Fail("Run-through", $"No run-through for scene '{scene}'. Open Level01, Level02 or Level03.")
             };
         }
 
@@ -128,6 +129,65 @@ namespace Rift.EditorTools
             h.Check("Ride the Static mover", h.Y > 21.2f && h.X > 110f);
             h.Hop(1, 116.5f); h.Lens(0, 60); h.Step(10);
             h.Check("Final ledge", h.X > 115f && h.Y > 21.2f);
+            h.Walk(1, 80);
+            h.Check("Goal reached", h.Run.IsComplete);
+            return h.Finish();
+        }
+
+        private static List<CheckResult> RunLevel03()
+        {
+            var h = new Harness();
+            h.Lens(0, 60); h.Step(10);
+            // Room 1: ash fields, one glass stone in the gap.
+            h.WalkUntil(1, 11.5f, 200); h.Hop(1, 16.5f);
+            h.Check("Room 1 up the ash step", h.Y > 1.6f);
+            h.WalkUntil(1, 20.6f, 120); h.Lens(23f, 1.4f); h.Step(3); h.Hop(1, 23f);
+            h.Hop(1, 26.5f); h.Lens(0, 60); h.Step(10);
+            h.Check("Room 1 glass stone across the gap", h.X > 25.5f && h.Y > -0.5f);
+            // Room 2: carry the lens along the long glass bridge.
+            h.WalkUntil(1, 31f, 120);
+            h.CarryLens(47f, -0.3f);
+            h.Check("Room 2 glass bridge", h.X > 46.5f && h.Y > -0.5f);
+            // Room 4: up the shaft on six glass ledges, lens between the ledge you're on and the next.
+            h.WalkUntil(1, 59.4f, 200); h.Step(10);
+            float lx = 59.4f, ly = 0f;
+            for (int i = 0; i < 6; i++)
+            {
+                float nx = i % 2 == 0 ? 61f : 64.5f, ny = 2.5f * (i + 1);
+                float dir = nx > h.X ? 1f : -1f;
+                h.Lens((lx + nx) * 0.5f, (ly + ny) * 0.5f); h.Step(3);
+                h.Climb(dir, nx - dir * 0.4f);
+                lx = nx; ly = ny;
+            }
+            h.Check("Room 4 shaft ledges", h.Y > 14.8f);
+            h.Lens(64.5f, 15f); h.Hop(1, 69f); h.Lens(0, 60); h.Step(10);
+            h.Check("Room 4 shaft exit", h.X > 68f && h.Y > 14.8f);
+            // Room 5: the fear wall only goes away while you look at it.
+            h.WalkUntil(1, 81.5f, 200);
+            h.Lens(84f, 16.6f); h.Step(5); h.WalkUntil(1, 87f, 120); h.Lens(0, 60); h.Step(5);
+            h.Check("Room 5 looked through the fear wall", h.X > 86f);
+            // Room 6: crumbling stones over the pit.
+            h.WalkUntil(1, 89.6f, 120);
+            h.Hop(1, 92.6f); h.Hop(1, 96.6f); h.Hop(1, 100.6f); h.Hop(1, 104.6f); h.Hop(1, 109f);
+            h.Check("Room 6 crumbling stones", h.X > 108f && h.Y > 16.8f);
+            // Room 7: down the glass steps; the glitch on the floor below is left asleep.
+            h.WalkUntil(1, 117.5f, 150);
+            float[] sx = { 121f, 125f, 129f, 133f }; float[] st = { 15.5f, 14f, 12.5f, 11f };
+            for (int i = 0; i < 4; i++) { h.Lens(sx[i], st[i]); h.Step(3); h.Hop(1, sx[i]); }
+            h.Hop(1, 138f); h.Lens(0, 60); h.Step(10);
+            h.Check("Room 7 glass descent", h.X > 136f && h.Y > 9.8f);
+            // Room 8: ride the Static mover over the void.
+            h.WalkUntil(1, 147.4f, 150); h.Step(5);
+            var moving = UnityEngine.Object.FindAnyObjectByType<Rift.Gadgets.MovingPlatform>();
+            var mover = moving.GetComponent<Rigidbody2D>();
+            for (int i = 0; i < 900 && (AdminReflection.Get<bool>(moving, "_toB") || mover.position.x > 150.6f); i++) h.Step(1);
+            h.Motor.PressJump(); h.Motor.SetMove(1);
+            for (int i = 0; i < 70; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); if (h.X > mover.position.x - 0.2f) h.Motor.SetMove(0); }
+            h.Motor.ReleaseJump(); h.Motor.SetMove(0);
+            for (int i = 0; i < 700 && mover.position.x < 161.8f; i++) { h.Lens(mover.position.x, mover.position.y); h.Step(1); }
+            h.Check("Room 8 ride the Static mover", h.X > 158f && h.Y > 9.8f);
+            h.Lens(mover.position.x + 2f, 10f); h.Hop(1, 167f); h.Lens(0, 60); h.Step(10);
+            h.Check("Final ledge", h.X > 165f && h.Y > 9.8f);
             h.Walk(1, 80);
             h.Check("Goal reached", h.Run.IsComplete);
             return h.Finish();

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed10d68cf24f5b146b5eeb7ce2cb9ba7, type: 3}
+  m_Name: Mindset_FearCourage
+  m_EditorClassIdentifier: Assembly-CSharp::Rift.Mindsets.MindsetTheme
+  levelLabel: level three
+  emberMindset: FEAR
+  staticMindset: COURAGE
+  healthyWorld: 1
+  emberMaterial: {fileID: 2100000, guid: 6f6c7060153d4f640bbea1b12f9d4e0e, type: 2}
+  staticMaterial: {fileID: 2100000, guid: 6aab28a046374074a85de5f0c51c0633, type: 2}
+  backgroundMaterial: {fileID: 2100000, guid: 2f2bcf62630fef949aaa6b5637158669, type: 2}
+  lensEdgeMaterial: {fileID: 2100000, guid: f97c12f9cd6a66d41ae4bd8832bed9c3, type: 2}
+  emberTextColor: {r: 1.8, g: 0.75, b: 0.35, a: 1}
+  staticTextColor: {r: 1.6, g: 2.2, b: 2.8, a: 1}
+  accentColor: {r: 1.6, g: 2.1, b: 2.8, a: 1}
+  emberTextMaterial: {fileID: 2100000, guid: d3a5ba1f3071ff648addfcf01752f781, type: 2}
+  staticTextMaterial: {fileID: 2100000, guid: 96d0e4cfec53eee4886c8ae960840eac, type: 2}
+  resolutionTitle: COURAGE
+  resolutionLine: it's smaller when you see it.
