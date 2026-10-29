@@ -34,6 +34,8 @@ namespace Rift.Audio
             {
                 g.Presence.Materialized += OnGlitchMaterialized;
                 g.Killed += OnGlitchCrushed;
+                g.WindupStarted += OnGlitchWindup;
+                g.Lunged += OnGlitchLunged;
             }
         }
 
@@ -54,6 +56,8 @@ namespace Rift.Audio
                 if (g == null) continue;
                 g.Presence.Materialized -= OnGlitchMaterialized;
                 g.Killed -= OnGlitchCrushed;
+                g.WindupStarted -= OnGlitchWindup;
+                g.Lunged -= OnGlitchLunged;
             }
         }
 
@@ -79,5 +83,7 @@ namespace Rift.Audio
         private void OnGoal() => _sfx.Play(_bank.goalSeal);
         private void OnGlitchMaterialized() => _sfx.Play(_bank.glitchMaterialize);
         private void OnGlitchCrushed() => _sfx.Play(_bank.glitchCrushed);
+        private void OnGlitchWindup() => _sfx.Play(_bank.glitchMaterialize, 0.7f);
+        private void OnGlitchLunged() => _sfx.Play(_bank.dash, 0.9f);
     }
 }
