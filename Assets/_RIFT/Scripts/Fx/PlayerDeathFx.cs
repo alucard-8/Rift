@@ -31,12 +31,37 @@ namespace Rift.Fx
         {
             var emit = new ParticleSystem.EmitParams();
             Vector3 at = _respawn.transform.position;
+            DeathCause cause = _respawn.LastCause;
             for (int i = 0; i < _shardCount; i++)
             {
+                Vector2 dir = Random.insideUnitCircle.normalized;
                 emit.position = at + (Vector3)(Random.insideUnitCircle * 0.3f);
-                emit.velocity = (Vector3)(Random.insideUnitCircle.normalized * Random.Range(0.4f, 1f) * _shardSpeed) + Vector3.up * 2f;
                 emit.startSize = Random.Range(0.08f, 0.22f);
                 emit.startLifetime = Random.Range(0.4f, 0.9f);
+                switch (cause)
+                {
+                    case DeathCause.Laser: // burnt into a thin rising column of ash
+                        emit.position = at + new Vector3(Random.Range(-0.08f, 0.08f), Random.Range(-0.6f, 0.6f));
+                        emit.velocity = Vector3.up * Random.Range(1f, 2f) * _shardSpeed;
+                        emit.startColor = new Color(0.5f, 2.4f, 2.8f);
+                        emit.startSize = Random.Range(0.04f, 0.1f);
+                        break;
+                    case DeathCause.Debris: // flattened: shards squirt out along the ground
+                        emit.position = at + Vector3.down * 0.4f;
+                        emit.velocity = new Vector3(Mathf.Sign(dir.x) * Random.Range(0.5f, 1.6f) * _shardSpeed, Random.Range(0f, 1f));
+                        emit.startColor = new Color(1f, 0.6f, 0.3f);
+                        break;
+                    case DeathCause.Glitch: // torn into square static that hangs in place
+                        emit.position = at + (Vector3)(Random.insideUnitCircle * 0.9f);
+                        emit.velocity = new Vector3(Random.value < 0.5f ? -1f : 1f, 0f) * Random.Range(0f, 0.6f) * _shardSpeed;
+                        emit.startColor = Random.value < 0.5f ? new Color(2f, 0.2f, 1.6f) : new Color(0.2f, 2f, 2f);
+                        emit.startLifetime = Random.Range(0.7f, 1.2f);
+                        break;
+                    default: // lost to the fall: a soft scatter
+                        emit.velocity = (Vector3)(dir * Random.Range(0.4f, 1f) * _shardSpeed) + Vector3.up * 2f;
+                        emit.startColor = Color.white;
+                        break;
+                }
                 _shards.Emit(emit, 1);
             }
         }

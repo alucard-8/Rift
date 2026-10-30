@@ -1,3 +1,4 @@
+using Rift.Extras;
 using Rift.Levels;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace Rift.UI
         [SerializeField] private CanvasGroup _hud;
         [SerializeField] private TMP_Text _timer;
         [SerializeField] private TMP_Text _deaths;
+        [Tooltip("Souls collected this run, e.g. \"2 / 3\". Optional.")]
+        [SerializeField] private TMP_Text _souls;
         [SerializeField] private Checkpoint[] _checkpoints;
         [SerializeField] private CanvasGroup _checkpointPip;
         [SerializeField] private float _pipHold = 1.6f;
@@ -40,6 +43,18 @@ namespace Rift.UI
             float dt = Time.unscaledDeltaTime;
             _timer.text = FormatTime(_run.Elapsed);
             _deaths.text = _run.Deaths.ToString();
+
+            if (_souls != null)
+            {
+                SoulTracker souls = SoulTracker.Instance;
+                _souls.text = souls != null ? $"{souls.Collected} / {souls.Total}" : "0 / 3";
+                if (Time.unscaledTime - SoulSkins.LastUnlockTime < 4f) _souls.text += $"   {SoulSkins.LastUnlock} CLOAK UNLOCKED";
+                if (souls != null && souls.AllCollected)
+                {
+                    Color accent = Shader.GetGlobalColor("_RiftAccent");
+                    _souls.color = accent.a > 0f ? accent : Color.white;
+                }
+            }
 
             _hud.alpha = Mathf.MoveTowards(_hud.alpha, _hidden ? 0f : 1f, _fadeSpeed * dt);
 

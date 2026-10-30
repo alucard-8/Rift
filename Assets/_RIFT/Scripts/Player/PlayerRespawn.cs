@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Rift.Player
 {
+    public enum DeathCause { Fall, Laser, Debris, Glitch }
+
     /// <summary>Sends the player back to the spawn point when they fall out of the world.</summary>
     [RequireComponent(typeof(PlayerMotor))]
     public class PlayerRespawn : MonoBehaviour
@@ -14,12 +16,15 @@ namespace Rift.Player
         public event Action Died;
         public event Action Respawned;
 
+        public DeathCause LastCause { get; private set; }
+
         public Transform SpawnPoint => _spawnPoint;
 
         public void SetSpawnPoint(Transform spawn) => _spawnPoint = spawn;
 
-        public void Respawn()
+        public void Respawn(DeathCause cause = DeathCause.Fall)
         {
+            LastCause = cause;
             Died?.Invoke();
             transform.position = _spawnPoint.position;
             GetComponent<Rigidbody2D>().position = _spawnPoint.position;

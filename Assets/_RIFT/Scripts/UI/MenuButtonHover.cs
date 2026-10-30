@@ -21,8 +21,14 @@ namespace Rift.UI
 
         public event Action Hovered;
 
-        private void Awake()
+        private void Awake() => Rebind(_label, _underline);
+
+        /// <summary>Point the hover at another button's label/underline (used by runtime clones).</summary>
+        public void Rebind(TMP_Text label, RectTransform underline)
         {
+            if (label == null || underline == null) return;
+            _label = label;
+            _underline = underline;
             _basePos = _label.rectTransform.anchoredPosition;
             _underlineWidth = _underline.sizeDelta.x;
             _label.color = _idle;

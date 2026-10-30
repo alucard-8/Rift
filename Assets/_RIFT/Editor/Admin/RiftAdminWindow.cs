@@ -91,6 +91,9 @@ namespace Rift.EditorTools
             Section(ref _showcase, "Feature showcase", () =>
             {
                 if (!EditorApplication.isPlaying) { EditorGUILayout.HelpBox("Enter play mode to try features.", MessageType.Info); return; }
+                Feature("Souls / skins", ("Grant 12", A.GrantSouls), ("Next cloak", A.CycleSkin), ("Reset save", A.ResetSouls));
+                Feature("Rare events", ("Strange creature", A.SummonCreature), ("Scatter fliers", A.ScatterFliers), ("NPC rare spin", A.RareNpcSpin));
+                Feature("Deaths", ("Fall", () => A.Die(Player.DeathCause.Fall)), ("Laser", () => A.Die(Player.DeathCause.Laser)), ("Debris", () => A.Die(Player.DeathCause.Debris)), ("Glitch", () => A.Die(Player.DeathCause.Glitch)));
                 bool inLevel = A.Checkpoints().Length > 0;
                 Feature("Audio", ("Jump sfx", () => A.PlaySound(b => b.jump)), ("Death sfx", () => A.PlaySound(b => b.deathShatter)), ("Checkpoint sfx", () => A.PlaySound(b => b.checkpoint)), ("Switch music", A.SwitchMusic));
                 if (!inLevel) return;

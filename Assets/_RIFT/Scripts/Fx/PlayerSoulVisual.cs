@@ -1,3 +1,4 @@
+using Rift.Extras;
 using Rift.Player;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ namespace Rift.Fx
         static readonly int LookId = Shader.PropertyToID("_Look");
         static readonly int BlinkId = Shader.PropertyToID("_Blink");
         static readonly int PulseId = Shader.PropertyToID("_PulseColor");
+        static readonly int BodyId = Shader.PropertyToID("_BodyColor");
+        static readonly int RimId = Shader.PropertyToID("_RimColor");
+        static readonly int EyeId = Shader.PropertyToID("_EyeColor");
 
         [SerializeField] private PlayerMotor _motor;
         [SerializeField] private Renderer _renderer;
@@ -84,6 +88,14 @@ namespace Rift.Fx
             _block.SetFloat(BlinkId, blink);
             _pulse = Color.Lerp(_pulse, Color.clear, 1f - Mathf.Exp(-1.6f * Time.unscaledDeltaTime));
             _block.SetColor(PulseId, _pulse);
+
+            int skin = SoulSkins.Selected;
+            SoulSkins.Skin s = SoulSkins.All[skin];
+            bool cycling = skin == SoulSkins.RiftbornIndex;
+            Color hue = Color.HSVToRGB(Mathf.Repeat(Time.time * 0.25f, 1f), 0.8f, 1f) * 3f;
+            _block.SetColor(BodyId, s.Body);
+            _block.SetColor(RimId, cycling ? hue : s.Rim);
+            _block.SetColor(EyeId, cycling ? hue : s.Eye);
             _renderer.SetPropertyBlock(_block);
         }
     }

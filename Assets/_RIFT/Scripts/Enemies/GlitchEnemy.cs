@@ -177,7 +177,7 @@ namespace Rift.Enemies
             if (other.attachedRigidbody.gameObject != _player.gameObject) return;
 
             HitPlayer?.Invoke();
-            _player.Respawn();
+            _player.Respawn(DeathCause.Glitch);
         }
 
         private void OnPlayerRespawned()

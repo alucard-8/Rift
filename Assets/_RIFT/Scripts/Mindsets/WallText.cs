@@ -35,6 +35,12 @@ namespace Rift.Mindsets
         [Tooltip("Extra size of the letter under the pen, so the eye follows the writing.")]
         [SerializeField] private float _penScale = 0.55f;
 
+        [Header("Readability")]
+        [Tooltip("Largest world-space font size a line may use, so a whole word fits inside the rift.")]
+        [SerializeField] private float _maxFontSize = 0.7f;
+        [Tooltip("Cap on how much the letter under the pen may grow while it is written.")]
+        [SerializeField] private float _maxPenScale = 0.35f;
+
         [Header("Breathing")]
         [SerializeField] private float _breathSpeed = 1.4f;
         [Range(0f, 0.5f)] [SerializeField] private float _breathDepth = 0.18f;
@@ -69,6 +75,12 @@ namespace Rift.Mindsets
         private void Awake()
         {
             _text = GetComponent<TMP_Text>();
+
+            // Keep lines small enough that a whole word fits inside the rift's crisp area.
+            // The scene values were tuned at 1.0–1.4 units on a 4.4-unit lens, which cut words at the rim.
+            _text.fontSize = Mathf.Min(_text.fontSize, _maxFontSize);
+            _penScale = Mathf.Min(_penScale, _maxPenScale);
+
             // Vertex colours are LDR; the HDR intensity that bloom picks up comes from the glow material.
             Color c = _theme.TextColorFor(_voice);
             float max = Mathf.Max(1f, Mathf.Max(c.r, Mathf.Max(c.g, c.b)));

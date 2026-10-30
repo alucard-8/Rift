@@ -14,6 +14,8 @@ namespace Rift.Core
         [SerializeField] private float _smoothTime = 0.18f;
         [SerializeField] private float _lookAhead = 2.5f;
         [SerializeField] private float _lookAheadSharpness = 3f;
+        [Tooltip("Horizontal speed at which the full look-ahead distance is reached.")]
+        [SerializeField] private float _lookAheadFullSpeed = 6f;
         [SerializeField] private float _verticalDeadZone = 1.2f;
         [SerializeField] private float _verticalOffset = 1f;
 
@@ -43,8 +45,13 @@ namespace Rift.Core
 
         private void LateUpdate()
         {
-            float dir = Mathf.Abs(_target.linearVelocity.x) > 0.5f ? Mathf.Sign(_target.linearVelocity.x) : 0f;
-            _lead = Mathf.Lerp(_lead, dir * _lookAhead, 1f - Mathf.Exp(-_lookAheadSharpness * Time.deltaTime));
+            // Lead in proportion to how fast the player is actually moving. Leading on input
+            // alone snapped the camera forward the instant a direction was pressed, which dragged
+            // the world — and the rift under the cursor — before the player had moved at all.
+            float vx = _target.linearVelocity.x;
+            float leadWeight = Mathf.Clamp01(Mathf.Abs(vx) / Mathf.Max(0.01f, _lookAheadFullSpeed));
+            float dir = Mathf.Abs(vx) > 0.05f ? Mathf.Sign(vx) : 0f;
+            _lead = Mathf.Lerp(_lead, dir * _lookAhead * leadWeight, 1f - Mathf.Exp(-_lookAheadSharpness * Time.deltaTime));
 
             // Only follow vertically once the player leaves the dead-zone (or lands somewhere new).
             float dy = _target.position.y - _focusY;

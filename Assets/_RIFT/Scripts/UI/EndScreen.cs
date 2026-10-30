@@ -1,4 +1,5 @@
 using System.Collections;
+using Rift.Extras;
 using Rift.Levels;
 using Rift.Mindsets;
 using TMPro;
@@ -37,12 +38,50 @@ namespace Rift.UI
         [SerializeField] private float _countTime = 0.7f;
 
         private float _dividerWidth;
+        private TMP_Text _soulsValue;
+        private TMP_Text _hiddenValue;
 
         private void Awake()
         {
             _dividerWidth = _divider.sizeDelta.x;
             _panel.alpha = 0f;
             _panel.blocksRaycasts = false;
+            AddSoulStats();
+        }
+
+        /// <summary>Two more stats, cloned from the third; the row re-centres to fit five.</summary>
+        private void AddSoulStats()
+        {
+            CanvasGroup last = _statBlocks[2];
+            var a = (RectTransform)_statBlocks[1].transform;
+            var b = (RectTransform)last.transform;
+            Vector2 step = b.anchoredPosition - a.anchoredPosition;
+
+            var blocks = new CanvasGroup[5];
+            System.Array.Copy(_statBlocks, blocks, 3);
+            blocks[3] = Instantiate(last, last.transform.parent);
+            blocks[4] = Instantiate(last, last.transform.parent);
+            for (int i = 3; i < 5; i++)
+                ((RectTransform)blocks[i].transform).anchoredPosition = b.anchoredPosition + step * (i - 2);
+            if (last.transform.parent.GetComponent<UnityEngine.UI.LayoutGroup>() == null)
+                foreach (CanvasGroup g in blocks) ((RectTransform)g.transform).anchoredPosition -= step;
+            _statBlocks = blocks;
+
+            _soulsValue = SetupStat(blocks[3], "SOULS");
+            _hiddenValue = SetupStat(blocks[4], "HIDDEN");
+        }
+
+        /// <summary>Renames a cloned block's label and returns its value text.</summary>
+        private TMP_Text SetupStat(CanvasGroup block, string label)
+        {
+            TMP_Text value = null;
+            string valuePath = _voicesValue.name;
+            foreach (TMP_Text t in block.GetComponentsInChildren<TMP_Text>(true))
+            {
+                if (t.name == valuePath) value = t;
+                else t.text = label;
+            }
+            return value;
         }
 
         private void OnEnable() => _run.Completed += OnCompleted;
@@ -97,6 +136,11 @@ namespace Rift.UI
             yield return CountUp(0, v => _timeValue.text = LevelHud.FormatTime(time * v));
             yield return CountUp(1, v => _deathsValue.text = Mathf.RoundToInt(deaths * v).ToString());
             yield return CountUp(2, v => _voicesValue.text = $"{Mathf.RoundToInt(heard * v)} / {_voices.Length}");
+
+            SoulTracker souls = SoulTracker.Instance;
+            int found = souls != null ? souls.Collected : 0, secret = souls != null ? souls.HiddenCollected : 0;
+            yield return CountUp(3, v => _soulsValue.text = $"{Mathf.RoundToInt(found * v)} / 3");
+            yield return CountUp(4, v => _hiddenValue.text = $"{Mathf.RoundToInt(secret * v)} / {SoulTracker.HiddenTotal}");
 
             yield return Fade(_prompts, 1f, 0.5f);
             for (float t = 0f; ; t += Time.unscaledDeltaTime)

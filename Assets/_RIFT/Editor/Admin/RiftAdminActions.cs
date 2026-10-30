@@ -30,6 +30,15 @@ namespace Rift.EditorTools
 
         // ---------- scenes ----------
 
+        public static void SummonCreature() { if (LivingWorld.Instance != null) LivingWorld.Instance.SummonBeast(); }
+        public static void ScatterFliers() { if (LivingWorld.Instance != null) LivingWorld.Instance.Scatter(); }
+        public static void RareNpcSpin() { foreach (var n in Object.FindObjectsByType<Extras.TalkingNpc>(FindObjectsSortMode.None)) n.PlayRareSpin(); }
+        public static void Die(DeathCause cause) { var r = Object.FindFirstObjectByType<PlayerRespawn>(); if (r != null) r.Respawn(cause); }
+
+        public static void GrantSouls() { Extras.SoulSkins.Grant(12); Debug.Log("[RIFT] 12 souls granted"); }
+        public static void CycleSkin() { Extras.SoulSkins.Cycle(); Debug.Log("[RIFT] Cloak: " + Extras.SoulSkins.All[Extras.SoulSkins.Selected].Name); }
+        public static void ResetSouls() { Extras.SoulSkins.Reset(); Debug.Log("[RIFT] Souls and cloak reset"); }
+
         public static void OpenScene(string name)
         {
             if (EditorApplication.isPlaying) EditorApplication.isPlaying = false;
